@@ -1,131 +1,92 @@
 package com.github.lotqwerty.lottweaks;
 
-import org.slf4j.Logger;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
-import com.mojang.logging.LogUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraft.client.Minecraft;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
+import com.github.lotqwerty.lottweaks.client.RotationHelper;
+import com.github.lotqwerty.lottweaks.network.LTPacketHandler;
+import com.github.lotqwerty.lottweaks.network.ServerConnectionListener;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(LotTweaks.MODID)
 public class LotTweaks {
-    // Define mod id in a common place for everything to reference
-    public static final String MODID = "lottweaks";
-    // Directly reference a slf4j logger
-    public static final Logger LOGGER = LogUtils.getLogger();
-    // Create a Deferred Register to hold Blocks which will all be registered under the "lottweaks" namespace
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "lottweaks" namespace
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "lottweaks" namespace
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Creates a new Block with the id "lottweaks:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "lottweaks:example_block", combining the namespace and path
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
+	public static final String MODID = "lottweaks";
+	public static final String NAME = "LotTweaks";
+	public static final String VERSION = "2.2.4";
+	public static Logger LOGGER = LogManager.getLogger();
 
-    // Creates a new food item with the id "lottweaks:example_id", nutrition 1 and saturation 2
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
-            .alwaysEat().nutrition(1).saturationMod(2f).build()));
+	public static class CONFIG {
+		private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
+		public static final ForgeConfigSpec COMMON_SPEC;
 
-    // Creates a creative tab with the id "lottweaks:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.lottweaks")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
+		public static ForgeConfigSpec.IntValue MAX_RANGE;// = 128;
+		public static ForgeConfigSpec.IntValue REPLACE_INTERVAL;// = 1;
+		public static ForgeConfigSpec.BooleanValue REQUIRE_OP_TO_USE_REPLACE;// = false;
+		public static ForgeConfigSpec.BooleanValue DISABLE_ANIMATIONS;// = false;
+		public static ForgeConfigSpec.BooleanValue SNEAK_TO_SWITCH_GROUP;// = false;
+		public static ForgeConfigSpec.BooleanValue INVERT_REPLACE_LOCK;// = false;
+		public static ForgeConfigSpec.BooleanValue SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT;// = true;
 
-    // The constructor for the mod class is the first code that is run when your mod is loaded.
-    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
-    public LotTweaks(IEventBus modEventBus) {
-        // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
+		static {
+			MAX_RANGE = COMMON_BUILDER
+					.defineInRange("common.MAX_RANGE", 128, 0, 256);
+			REPLACE_INTERVAL = COMMON_BUILDER
+					.defineInRange("client.REPLACE_INTERVAL", 1, 1, 256);
+			REQUIRE_OP_TO_USE_REPLACE = COMMON_BUILDER
+					.comment("Default: false")
+					.define("server.REQUIRE_OP_TO_USE_REPLACE", false);
+			DISABLE_ANIMATIONS = COMMON_BUILDER
+					.comment("Default: false")
+					.define("client.DISABLE_ANIMATIONS", false);
+			SNEAK_TO_SWITCH_GROUP = COMMON_BUILDER
+					.comment("Default: false -> Double-tap to switch to the secondary group")
+					.define("client.SNEAK_TO_SWITCH_GROUP", false);
+			INVERT_REPLACE_LOCK = COMMON_BUILDER
+					.comment("Default: false")
+					.define("client.INVERT_REPLACE_LOCK", false);
+			SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT = COMMON_BUILDER
+					.comment("Default: true")
+					.comment("'true' is highly recommended")
+					.define("client.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT", true);
+			//
+			COMMON_SPEC = COMMON_BUILDER.build();
+		}
+	}
 
-        // Register the Deferred Register to the mod event bus so blocks get registered
-        BLOCKS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so items get registered
-        ITEMS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so tabs get registered
-        CREATIVE_MODE_TABS.register(modEventBus);
+	public LotTweaks() {
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CONFIG.COMMON_SPEC, NAME + ".toml");
+		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		modEventBus.addListener(this::clientInit);
+		modEventBus.addListener(this::commonInit);
+		if (FMLEnvironment.dist == Dist.CLIENT) {
+			modEventBus.addListener(LotTweaksClient::onRegisterKeyMappingsEvent);
+			modEventBus.addListener(LotTweaksClient::onRegisterGuiOverlaysEvent);
+		}
+	}
 
-        // Register ourselves for server and other game events we are interested in.
-        // Note that this is necessary if and only if we want *this* class (LotTweaks) to respond directly to events.
-        // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
-        NeoForge.EVENT_BUS.register(this);
+	private void clientInit(FMLClientSetupEvent event) {
+		LotTweaksClient.init();
+		RotationHelper.loadAllFromFile();
+		RotationHelper.loadAllItemGroupFromStrArray();
+	}
 
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
+	private void commonInit(FMLCommonSetupEvent event) {
+		LTPacketHandler.init();
+		MinecraftForge.EVENT_BUS.register(new AdjustRangeHelper());
+		MinecraftForge.EVENT_BUS.register(new ServerConnectionListener());
+	}
 
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-        if (Config.LOG_DIRT_BLOCK.getAsBoolean()) {
-            LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-        }
-
-        LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
-
-        Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
-    }
-
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(EXAMPLE_BLOCK_ITEM);
-        }
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
-    }
-
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @EventBusSubscriber(modid = LotTweaks.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    static class ClientModEvents {
-        @SubscribeEvent
-        static void onClientSetup(FMLClientSetupEvent event) {
-            // Some client setup code
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-        }
-    }
 }
