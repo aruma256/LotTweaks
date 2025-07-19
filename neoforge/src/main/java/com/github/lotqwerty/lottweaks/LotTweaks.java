@@ -19,6 +19,7 @@ import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
 import com.github.lotqwerty.lottweaks.client.RotationHelper;
 import com.github.lotqwerty.lottweaks.network.LTPacketHandler;
 import com.github.lotqwerty.lottweaks.network.ServerConnectionListener;
+import com.mojang.logging.LogUtils;
 
 @Mod(LotTweaks.MODID)
 public class LotTweaks {
@@ -26,7 +27,7 @@ public class LotTweaks {
 	public static final String MODID = "lottweaks";
 	public static final String NAME = "LotTweaks";
 	public static final String VERSION = "2.2.4";
-	public static Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static class CONFIG {
 		private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
