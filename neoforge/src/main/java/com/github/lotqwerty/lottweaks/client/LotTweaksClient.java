@@ -3,6 +3,7 @@ package com.github.lotqwerty.lottweaks.client;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
+import com.github.lotqwerty.lottweaks.Config;
 import com.github.lotqwerty.lottweaks.client.keys.ExPickKey;
 import com.github.lotqwerty.lottweaks.client.keys.AdjustRangeKey;
 import com.github.lotqwerty.lottweaks.client.keys.ReplaceKey;
@@ -77,7 +78,7 @@ public class LotTweaksClient
 	}
 
 	public static void showErrorLogToChat() {
-		if (LotTweaks.CONFIG.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT.get()) {
+		if (Config.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT.get()) {
 			Minecraft mc = Minecraft.getInstance();
 			for (String line : RotationHelper.LOG_GROUP_CONFIG) {
 				mc.getChatListener().handleSystemMessage(Component.literal(String.format("LotTweaks: %s%s", ChatFormatting.RED, line)), false);

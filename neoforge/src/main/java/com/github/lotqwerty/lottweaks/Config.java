@@ -1,42 +1,43 @@
 package com.github.lotqwerty.lottweaks;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
+    public static final ModConfigSpec.IntValue MAX_RANGE = BUILDER
+            .comment("Maximum range for area operations")
+            .defineInRange("common.MAX_RANGE", 128, 0, 256);
 
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue REPLACE_INTERVAL = BUILDER
+            .comment("Interval for replace operations")
+            .defineInRange("client.REPLACE_INTERVAL", 1, 1, 256);
 
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
+    public static final ModConfigSpec.BooleanValue REQUIRE_OP_TO_USE_REPLACE = BUILDER
+            .comment("Default: false")
+            .comment("Require OP permission to use replace functionality")
+            .define("server.REQUIRE_OP_TO_USE_REPLACE", false);
 
-    // a list of strings that are treated as resource locations for items
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
+    public static final ModConfigSpec.BooleanValue DISABLE_ANIMATIONS = BUILDER
+            .comment("Default: false")
+            .comment("Disable animations in the mod")
+            .define("client.DISABLE_ANIMATIONS", false);
+
+    public static final ModConfigSpec.BooleanValue SNEAK_TO_SWITCH_GROUP = BUILDER
+            .comment("Default: false -> Double-tap to switch to the secondary group")
+            .comment("Use sneak key to switch item groups")
+            .define("client.SNEAK_TO_SWITCH_GROUP", false);
+
+    public static final ModConfigSpec.BooleanValue INVERT_REPLACE_LOCK = BUILDER
+            .comment("Default: false")
+            .comment("Invert the replace lock behavior")
+            .define("client.INVERT_REPLACE_LOCK", false);
+
+    public static final ModConfigSpec.BooleanValue SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT = BUILDER
+            .comment("Default: true")
+            .comment("'true' is highly recommended")
+            .comment("Show block configuration errors in chat")
+            .define("client.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT", true);
 
     static final ModConfigSpec SPEC = BUILDER.build();
-
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(new ResourceLocation(itemName));
-    }
 }

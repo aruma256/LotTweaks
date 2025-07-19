@@ -3,6 +3,7 @@ package com.github.lotqwerty.lottweaks.client.renderer;
 import java.util.Collection;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
+import com.github.lotqwerty.lottweaks.Config;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.GuiGraphics;
@@ -33,7 +34,7 @@ public final class LTRenderer {
 	}
 
 	private static void circular(GuiGraphics guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
-		if (LotTweaks.CONFIG.DISABLE_ANIMATIONS.get()) {
+		if (Config.DISABLE_ANIMATIONS.get()) {
 			t = Integer.MAX_VALUE;
 			pt = 0;
 		}

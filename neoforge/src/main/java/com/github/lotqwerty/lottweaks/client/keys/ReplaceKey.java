@@ -1,6 +1,7 @@
 package com.github.lotqwerty.lottweaks.client.keys;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
+import com.github.lotqwerty.lottweaks.Config;
 import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
 import com.github.lotqwerty.lottweaks.client.renderer.LTTextRenderer;
 import com.github.lotqwerty.lottweaks.client.renderer.SelectionBoxRenderer;
@@ -37,7 +38,7 @@ public class ReplaceKey extends LTKeyBase {
 	@Override
 	protected void onKeyPressStart() {
 		Minecraft mc = Minecraft.getInstance();
-		if (mc.player.isShiftKeyDown() ^ LotTweaks.CONFIG.INVERT_REPLACE_LOCK.get()) {
+		if (mc.player.isShiftKeyDown() ^ Config.INVERT_REPLACE_LOCK.get()) {
 			HitResult target = mc.hitResult;
 			if (target != null && target.getType() == HitResult.Type.BLOCK){
 				lockedBlockState = mc.level.getBlockState(((BlockHitResult)target).getBlockPos());
@@ -79,7 +80,7 @@ public class ReplaceKey extends LTKeyBase {
 			LTTextRenderer.showServerSideRequiredMessage(new GuiGraphics(Minecraft.getInstance(), Minecraft.getInstance().renderBuffers().bufferSource()), "2.2.1");
 			return;
 		}
-		if (this.pressTime==1 || this.pressTime > LotTweaks.CONFIG.REPLACE_INTERVAL.get()) {
+		if (this.pressTime==1 || this.pressTime > Config.REPLACE_INTERVAL.get()) {
 			this.execReplace();
 			if (this.pressTime==1) {
 				this.pressTime++;

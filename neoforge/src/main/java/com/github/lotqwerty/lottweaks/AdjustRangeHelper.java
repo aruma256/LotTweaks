@@ -5,10 +5,10 @@ import java.util.UUID;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.TickEvent.PlayerTickEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class AdjustRangeHelper {
 
@@ -29,7 +29,7 @@ public class AdjustRangeHelper {
 
 	//Just remove all of them!
 	public static void removeOldRangeModifiers(Player player) {
-		AttributeInstance instance = player.getAttribute(ForgeMod.BLOCK_REACH.get());
+		AttributeInstance instance = player.getAttribute(NeoForgeMod.BLOCK_REACH.get());
 		for (AttributeModifier modifier: instance.getModifiers()) {
 //			if (modifier.getName().equals(LotTweaks.MODID)) {
 			if (modifier.save().getString("Name").equals(LotTweaks.MODID)) {
@@ -39,12 +39,12 @@ public class AdjustRangeHelper {
 	}
 	
 	private static void clearRangeModifier(Player player) {
-		player.getAttribute(ForgeMod.BLOCK_REACH.get()).removeModifier(_UUID);
+		player.getAttribute(NeoForgeMod.BLOCK_REACH.get()).removeModifier(_UUID);
 	}
 
 	public static void changeRangeModifier(Player player, double dist) {
 		clearRangeModifier(player);
-		AttributeInstance instance = player.getAttribute(ForgeMod.BLOCK_REACH.get());
+		AttributeInstance instance = player.getAttribute(NeoForgeMod.BLOCK_REACH.get());
 		instance.addPermanentModifier(new AttributeModifier(_UUID, NAME, dist - instance.getBaseValue() + 0.5, AttributeModifier.Operation.ADDITION));
 	}
 	

@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.github.lotqwerty.lottweaks.AdjustRangeHelper;
 import com.github.lotqwerty.lottweaks.LotTweaks;
+import com.github.lotqwerty.lottweaks.Config;
 import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
 
 import net.minecraft.world.level.block.Block;
@@ -97,7 +98,7 @@ public class LTPacketHandler {
 				// kore iru ??
 				return;
 			}
-			if (LotTweaks.CONFIG.REQUIRE_OP_TO_USE_REPLACE.get() && player.getServer().getPlayerList().getOps().get(player.getGameProfile())==null) {
+			if (Config.REQUIRE_OP_TO_USE_REPLACE.get() && player.getServer().getPlayerList().getOps().get(player.getGameProfile())==null) {
 				return;
 			}
 			// validation
@@ -105,7 +106,7 @@ public class LTPacketHandler {
 				return;
 			}
 			double dist = player.getEyePosition(1.0F).distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
-			if (dist > LotTweaks.CONFIG.MAX_RANGE.get()) {
+			if (dist > Config.MAX_RANGE.get()) {
 				return;
 			}
 			if (player.level().getBlockState(pos) != checkState) {
@@ -147,7 +148,7 @@ public class LTPacketHandler {
 				if (dist < 0) {
 					return;
 				}
-				dist = Math.min(LotTweaks.CONFIG.MAX_RANGE.get(), dist);
+				dist = Math.min(Config.MAX_RANGE.get(), dist);
 				AdjustRangeHelper.changeRangeModifier(player, dist);
 			});
 			return;

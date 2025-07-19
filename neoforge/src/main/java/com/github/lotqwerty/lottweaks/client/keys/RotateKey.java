@@ -3,6 +3,7 @@ package com.github.lotqwerty.lottweaks.client.keys;
 import java.util.List;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
+import com.github.lotqwerty.lottweaks.Config;
 import com.github.lotqwerty.lottweaks.client.RotationHelper;
 import com.github.lotqwerty.lottweaks.client.RotationHelper.Group;
 import com.github.lotqwerty.lottweaks.client.renderer.LTRenderer;
@@ -35,7 +36,7 @@ public class RotateKey extends ItemSelectKeyBase implements IGuiOverlay {
 	}
 
 	private Group getGroup() {
-		if (LotTweaks.CONFIG.SNEAK_TO_SWITCH_GROUP.get()) {
+		if (Config.SNEAK_TO_SWITCH_GROUP.get()) {
 			return (!Minecraft.getInstance().player.isShiftKeyDown()) ? Group.PRIMARY : Group.SECONDARY;
 		} else {
 			return this.phase==0 ? Group.PRIMARY : Group.SECONDARY;

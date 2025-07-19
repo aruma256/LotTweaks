@@ -1,25 +1,22 @@
 package com.github.lotqwerty.lottweaks;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import com.mojang.logging.LogUtils;
 
 import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
 import com.github.lotqwerty.lottweaks.client.RotationHelper;
 import com.github.lotqwerty.lottweaks.network.LTPacketHandler;
 import com.github.lotqwerty.lottweaks.network.ServerConnectionListener;
-import com.mojang.logging.LogUtils;
 
 @Mod(LotTweaks.MODID)
 public class LotTweaks {
@@ -29,65 +26,33 @@ public class LotTweaks {
 	public static final String VERSION = "2.2.4";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public static class CONFIG {
-		private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
-		public static final ForgeConfigSpec COMMON_SPEC;
+	public LotTweaks(IEventBus modEventBus) {
+		// Register our mod's ModConfigSpec so that FML can create and load the config file for us
+		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC, NAME + ".toml");
 
-		public static ForgeConfigSpec.IntValue MAX_RANGE;// = 128;
-		public static ForgeConfigSpec.IntValue REPLACE_INTERVAL;// = 1;
-		public static ForgeConfigSpec.BooleanValue REQUIRE_OP_TO_USE_REPLACE;// = false;
-		public static ForgeConfigSpec.BooleanValue DISABLE_ANIMATIONS;// = false;
-		public static ForgeConfigSpec.BooleanValue SNEAK_TO_SWITCH_GROUP;// = false;
-		public static ForgeConfigSpec.BooleanValue INVERT_REPLACE_LOCK;// = false;
-		public static ForgeConfigSpec.BooleanValue SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT;// = true;
-
-		static {
-			MAX_RANGE = COMMON_BUILDER
-					.defineInRange("common.MAX_RANGE", 128, 0, 256);
-			REPLACE_INTERVAL = COMMON_BUILDER
-					.defineInRange("client.REPLACE_INTERVAL", 1, 1, 256);
-			REQUIRE_OP_TO_USE_REPLACE = COMMON_BUILDER
-					.comment("Default: false")
-					.define("server.REQUIRE_OP_TO_USE_REPLACE", false);
-			DISABLE_ANIMATIONS = COMMON_BUILDER
-					.comment("Default: false")
-					.define("client.DISABLE_ANIMATIONS", false);
-			SNEAK_TO_SWITCH_GROUP = COMMON_BUILDER
-					.comment("Default: false -> Double-tap to switch to the secondary group")
-					.define("client.SNEAK_TO_SWITCH_GROUP", false);
-			INVERT_REPLACE_LOCK = COMMON_BUILDER
-					.comment("Default: false")
-					.define("client.INVERT_REPLACE_LOCK", false);
-			SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT = COMMON_BUILDER
-					.comment("Default: true")
-					.comment("'true' is highly recommended")
-					.define("client.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT", true);
-			//
-			COMMON_SPEC = COMMON_BUILDER.build();
-		}
-	}
-
-	public LotTweaks() {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CONFIG.COMMON_SPEC, NAME + ".toml");
-		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modEventBus.addListener(this::clientInit);
-		modEventBus.addListener(this::commonInit);
+		// Register the commonSetup method for modloading
+		modEventBus.addListener(this::commonSetup);
+		
+		// Register client setup only on client side
 		if (FMLEnvironment.dist == Dist.CLIENT) {
+			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(LotTweaksClient::onRegisterKeyMappingsEvent);
 			modEventBus.addListener(LotTweaksClient::onRegisterGuiOverlaysEvent);
 		}
+
+		// Register ourselves for server and other game events we are interested in
+		NeoForge.EVENT_BUS.register(this);
 	}
 
-	private void clientInit(FMLClientSetupEvent event) {
+	private void clientSetup(FMLClientSetupEvent event) {
 		LotTweaksClient.init();
 		RotationHelper.loadAllFromFile();
 		RotationHelper.loadAllItemGroupFromStrArray();
 	}
 
-	private void commonInit(FMLCommonSetupEvent event) {
+	private void commonSetup(FMLCommonSetupEvent event) {
 		LTPacketHandler.init();
-		MinecraftForge.EVENT_BUS.register(new AdjustRangeHelper());
-		MinecraftForge.EVENT_BUS.register(new ServerConnectionListener());
+		NeoForge.EVENT_BUS.register(new AdjustRangeHelper());
+		NeoForge.EVENT_BUS.register(new ServerConnectionListener());
 	}
-
 }
