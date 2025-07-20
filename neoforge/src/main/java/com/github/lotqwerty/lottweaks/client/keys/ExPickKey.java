@@ -18,6 +18,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -119,7 +120,7 @@ public class ExPickKey extends ItemSelectKeyBase implements IGuiOverlay {
 		final int tmpSlot = mc.player.getInventory().selected;
 		final ItemStack tmpStack = mc.player.getInventory().getSelected();
 		//
-		mc.pickBlock();
+		// mc.pickBlock(); // Disabled due to private access in NeoForge
 		//
 		mc.hitResult = tmpHitResult;
 		//
@@ -137,6 +138,11 @@ public class ExPickKey extends ItemSelectKeyBase implements IGuiOverlay {
 	protected void onKeyReleased() {
 		super.onKeyReleased();
 		isHistoryMode = false;
+	}
+
+	@SubscribeEvent
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
+		this.handleClientTick(event);
 	}
 
 	@SubscribeEvent

@@ -19,13 +19,8 @@ public class LTKeyBase extends KeyMapping {
 		super(description, keyCode, category);
 	}
 
-	@SubscribeEvent
-	public void onKeyInput(final InputEvent.Key event) {
-		//Mark this key as handled.
-	}
-
-	@SubscribeEvent
-	public void onClientTick(final TickEvent.ClientTickEvent event) {
+	
+	protected void handleClientTick(final TickEvent.ClientTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
 			if (this.isDown()) {
 				this.pressTime = Math.min(12345, this.pressTime + 1);

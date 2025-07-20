@@ -22,6 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -53,6 +54,11 @@ public class ReplaceKey extends LTKeyBase {
 	@Override
 	protected void onKeyReleased() {
 		lockedBlockState = null;
+	}
+
+	@SubscribeEvent
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
+		this.handleClientTick(event);
 	}
 
 	@SubscribeEvent

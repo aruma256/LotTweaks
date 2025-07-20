@@ -16,6 +16,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -66,6 +67,11 @@ public class RotateKey extends ItemSelectKeyBase implements IGuiOverlay {
 	@Override
 	protected void onKeyReleased() {
 		super.onKeyReleased();
+	}
+
+	@SubscribeEvent
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
+		this.handleClientTick(event);
 	}
 
 	@SubscribeEvent

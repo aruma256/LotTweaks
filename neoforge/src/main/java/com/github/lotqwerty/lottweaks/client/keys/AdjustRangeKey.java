@@ -13,12 +13,19 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class AdjustRangeKey extends LTKeyBase implements IGuiOverlay {
 
 	public AdjustRangeKey(int keyCode, String category) {
 		super("lottweaks-adjustrange", keyCode, category);
+	}
+
+	@SubscribeEvent
+	public void onClientTick(final TickEvent.ClientTickEvent event) {
+		this.handleClientTick(event);
 	}
 
 	@Override
