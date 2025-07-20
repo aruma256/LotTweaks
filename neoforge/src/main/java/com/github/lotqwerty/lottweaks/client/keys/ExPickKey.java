@@ -120,7 +120,7 @@ public class ExPickKey extends ItemSelectKeyBase implements IGuiOverlay {
 		final int tmpSlot = mc.player.getInventory().selected;
 		final ItemStack tmpStack = mc.player.getInventory().getSelected();
 		//
-		// mc.pickBlock(); // Disabled due to private access in NeoForge
+		((com.github.lotqwerty.lottweaks.mixin.VanillaPickInvoker)mc).lottweaks_invokeVanillaItemPick();
 		//
 		mc.hitResult = tmpHitResult;
 		//

@@ -2,7 +2,9 @@
   "required": true,
   "package": "com.github.lotqwerty.lottweaks.mixin",
   "compatibilityLevel": "JAVA_17",
-  "mixins": [],
+  "mixins": [
+    "VanillaPickInvoker"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
