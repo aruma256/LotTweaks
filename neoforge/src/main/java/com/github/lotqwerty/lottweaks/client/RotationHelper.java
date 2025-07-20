@@ -20,7 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class RotationHelper {
 
@@ -308,7 +308,7 @@ public class RotationHelper {
 				List<Item> items = new ArrayList<>();
 				for (String itemStr: line.split(",")) {
 					ResourceLocation resourceLocation = new ResourceLocation(itemStr);
-					Item item = ForgeRegistries.ITEMS.getValue(resourceLocation);
+					Item item = BuiltInRegistries.ITEM.get(resourceLocation);
 					if (item == null || item == Items.AIR) {
 						warnGroupConfigErrors(String.format("'%s' is not supported.", itemStr), lineCount, group);
 						continue;
@@ -328,7 +328,7 @@ public class RotationHelper {
 				}
 			}
 		} catch (Exception e) {
-			LotTweaks.LOGGER.error(e);
+			LotTweaks.LOGGER.error("Error reading file", e);
 			return false;
 		}
 		getItemChain(group).clear();

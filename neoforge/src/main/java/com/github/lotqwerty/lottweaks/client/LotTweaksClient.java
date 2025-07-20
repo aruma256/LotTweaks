@@ -13,15 +13,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class LotTweaksClient
@@ -39,12 +39,12 @@ public class LotTweaksClient
 
 	public static void init() {
 		for (KeyMapping key : keyMappings) {
-			MinecraftForge.EVENT_BUS.register(key);
+			NeoForge.EVENT_BUS.register(key);
 		}
 		//
-		MinecraftForge.EVENT_BUS.register(new LotTweaksClient());
+		NeoForge.EVENT_BUS.register(new LotTweaksClient());
 		//
-		MinecraftForge.EVENT_BUS.register(new LotTweaksCommand());
+		NeoForge.EVENT_BUS.register(new LotTweaksCommand());
 	}
 
 	public static void onRegisterKeyMappingsEvent(RegisterKeyMappingsEvent event) {

@@ -1,12 +1,12 @@
 package com.github.lotqwerty.lottweaks.client.keys;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class LTKeyBase extends KeyMapping {
@@ -26,7 +26,7 @@ public class LTKeyBase extends KeyMapping {
 
 	@SubscribeEvent
 	public void onClientTick(final TickEvent.ClientTickEvent event) {
-		if (event.phase == TickEvent.Phase.END && event.getPhase() == EventPriority.NORMAL) {
+		if (event.phase == TickEvent.Phase.END) {
 			if (this.isDown()) {
 				this.pressTime = Math.min(12345, this.pressTime + 1);
 				if (this.pressTime == 1) {

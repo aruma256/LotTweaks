@@ -19,12 +19,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.event.TickEvent.RenderTickEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RenderHighlightEvent;
+import net.neoforged.neoforge.event.TickEvent.RenderTickEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class ReplaceKey extends LTKeyBase {
@@ -70,9 +70,7 @@ public class ReplaceKey extends LTKeyBase {
 
 	@SubscribeEvent
 	public void onRenderTick(final RenderTickEvent event) {
-		if (event.getPhase() != EventPriority.NORMAL) {
-			return;
-		}
+		// Skip phase check for render tick
 		if (this.pressTime == 0) {
 			return;
 		}

@@ -11,12 +11,12 @@ import com.github.lotqwerty.lottweaks.client.renderer.LTRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.client.gui.overlay.IGuiOverlay;
+import net.neoforged.bus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
 public class RotateKey extends ItemSelectKeyBase implements IGuiOverlay {
@@ -80,7 +80,7 @@ public class RotateKey extends ItemSelectKeyBase implements IGuiOverlay {
 		if (event.isCanceled()) {
 			return;
 		}
-		double wheel = event.getDeltaY();
+		double wheel = event.getScrollDeltaY();
 		if (wheel == 0) {
 			return;
 		}
@@ -97,7 +97,7 @@ public class RotateKey extends ItemSelectKeyBase implements IGuiOverlay {
 	}
 
 	@Override
-	public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
+	public void render(ExtendedGui gui, GuiGraphics guiGraphics, float partialTicks, int screenWidth, int screenHeight) {
 		if (this.pressTime == 0) {
 			candidates.clear();
 			return;

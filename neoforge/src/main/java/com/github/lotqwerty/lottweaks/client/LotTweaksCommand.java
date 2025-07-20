@@ -19,11 +19,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.commands.GiveCommand;
 import net.minecraft.ChatFormatting;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
 
 @OnlyIn(Dist.CLIENT)
 public class LotTweaksCommand extends LiteralArgumentBuilder<CommandSourceStack> {
@@ -68,7 +68,7 @@ public class LotTweaksCommand extends LiteralArgumentBuilder<CommandSourceStack>
 			if (item == Items.AIR) {
 				throw ERROR_NO_ACTION_PERFORMED.create(Component.literal(String.format("Failed to get item instance. (%d)", i + 1)));
 			}
-			String name = ForgeRegistries.ITEMS.getKey(item).toString();
+			String name = BuiltInRegistries.ITEM.getKey(item).toString();
 			if (RotationHelper.canRotate(itemStack, group)) {
 				throw ERROR_NO_ACTION_PERFORMED.create(Component.literal(String.format("'%s' already exists (slot %d)", name, i + 1)));
 			}
