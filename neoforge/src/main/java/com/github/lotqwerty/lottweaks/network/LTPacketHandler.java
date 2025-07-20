@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
@@ -19,165 +20,145 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
-
-//https://mcforge.readthedocs.io/en/1.16.x/networking/simpleimpl/
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class LTPacketHandler {
 
-	private static final int PROTOCOL_VERSION = 1;
-	private static final SimpleChannel INSTANCE = ChannelBuilder.named(
-		new ResourceLocation(LotTweaks.MODID))
-		.networkProtocolVersion(PROTOCOL_VERSION)
-		.clientAcceptedVersions((serverStatus, serverVersion) -> serverStatus == VersionTest.Status.VANILLA || serverStatus == VersionTest.Status.MISSING || serverVersion <= PROTOCOL_VERSION)
-		.serverAcceptedVersions((clientStatus, clientVersion) -> true)
-		.simpleChannel();
+	@SubscribeEvent
+	public static void register(RegisterPayloadHandlerEvent event) {
+		final IPayloadRegistrar registrar = event.registrar(LotTweaks.MODID)
+				.versioned("1.0.0")
+				.optional();
 
-	public static void init() {
-		int id = 0;
-		INSTANCE.messageBuilder(ReplaceMessage.class, id++)
-			.encoder(ReplaceMessage::toBytes)
-			.decoder(ReplaceMessage::new)
-			.consumerMainThread(ReplaceMessage::handle)
-			.add();
-		INSTANCE.messageBuilder(AdjustRangeMessage.class, id++)
-			.encoder(AdjustRangeMessage::toBytes)
-			.decoder(AdjustRangeMessage::new)
-			.consumerMainThread(AdjustRangeMessage::handle)
-			.add();
-		INSTANCE.messageBuilder(HelloMessage.class, id++)
-			.encoder(HelloMessage::toBytes)
-			.decoder(HelloMessage::new)
-			.consumerMainThread(HelloMessage::handle)
-			.add();
+		// Register payloads
+		registrar.play(ReplacePayload.ID, ReplacePayload::new, LTPacketHandler::handleReplaceMessage);
+		registrar.play(AdjustRangePayload.ID, AdjustRangePayload::new, LTPacketHandler::handleAdjustRangeMessage);
+		registrar.play(HelloPayload.ID, HelloPayload::new, LTPacketHandler::handleHelloMessage);
 	}
 
+	public static void init() {
+		// Registration now happens via event
+	}
+
+	// Handler methods
+	private static void handleReplaceMessage(ReplacePayload payload, PlayPayloadContext context) {
+		context.workHandler().submitAsync(() -> {
+			if (context.player().isPresent() && context.player().get() instanceof ServerPlayer player) {
+				if (!player.isCreative()) {
+					return;
+				}
+				if (player.level().isClientSide) {
+					return;
+				}
+				if (Config.REQUIRE_OP_TO_USE_REPLACE.get() && player.getServer().getPlayerList().getOps().get(player.getGameProfile()) == null) {
+					return;
+				}
+				// validation
+				if (payload.state().getBlock() == Blocks.AIR) {
+					return;
+				}
+				double dist = player.getEyePosition(1.0F).distanceTo(new Vec3(payload.pos().getX(), payload.pos().getY(), payload.pos().getZ()));
+				if (dist > Config.MAX_RANGE.get()) {
+					return;
+				}
+				if (player.level().getBlockState(payload.pos()) != payload.checkState()) {
+					return;
+				}
+				// Execute the block replacement
+				player.level().setBlock(payload.pos(), payload.state(), 2);
+			}
+		});
+	}
+
+	private static void handleAdjustRangeMessage(AdjustRangePayload payload, PlayPayloadContext context) {
+		context.workHandler().submitAsync(() -> {
+			if (context.player().isPresent() && context.player().get() instanceof ServerPlayer player) {
+				if (!player.isCreative()) {
+					return;
+				}
+				if (payload.dist() < 0) {
+					return;
+				}
+				double dist = Math.min(Config.MAX_RANGE.get(), payload.dist());
+				AdjustRangeHelper.changeRangeModifier(player, dist);
+			}
+		});
+	}
+
+	private static void handleHelloMessage(HelloPayload payload, PlayPayloadContext context) {
+		context.workHandler().submitAsync(() -> {
+			LotTweaksClient.setServerVersion(payload.version());
+		});
+	}
+
+	// Public API methods
 	public static void sendReplaceMessage(BlockPos pos, BlockState state, BlockState checkState) {
-		INSTANCE.send(new ReplaceMessage(pos, state, checkState), PacketDistributor.SERVER.noArg());
+		PacketDistributor.SERVER.noArg().send(new ReplacePayload(pos, state, checkState));
 	}
 
 	public static void sendReachRangeMessage(double dist) {
-		INSTANCE.send(new AdjustRangeMessage(dist), PacketDistributor.SERVER.noArg());
+		PacketDistributor.SERVER.noArg().send(new AdjustRangePayload(dist));
 	}
 
 	public static void sendHelloMessage(ServerPlayer player) {
-		INSTANCE.send(new HelloMessage(LotTweaks.VERSION), PacketDistributor.PLAYER.with(player));
+		PacketDistributor.PLAYER.with(player).send(new HelloPayload(LotTweaks.VERSION));
 	}
 
-	//Replace
+	// Payload Records
+	public record ReplacePayload(BlockPos pos, BlockState state, BlockState checkState) implements CustomPacketPayload {
+		public static final ResourceLocation ID = new ResourceLocation(LotTweaks.MODID, "replace");
 
-	public static class ReplaceMessage {
-
-		private final BlockPos pos;
-		private final BlockState state;
-		private final BlockState checkState;
-
-		public ReplaceMessage(BlockPos pos, BlockState state, BlockState checkState) {
-			this.pos = pos;
-			this.state = state;
-			this.checkState = checkState;
-		}
-
-		public ReplaceMessage(FriendlyByteBuf buf) {
+		public ReplacePayload(FriendlyByteBuf buf) {
 			this(buf.readBlockPos(), Block.stateById(buf.readInt()), Block.stateById(buf.readInt()));
 		}
 
-		public void toBytes(FriendlyByteBuf buf) {
+		@Override
+		public void write(FriendlyByteBuf buf) {
 			buf.writeBlockPos(this.pos);
 			buf.writeInt(Block.getId(state));
 			buf.writeInt(Block.getId(checkState));
 		}
 
-		public void handle(CustomPayloadEvent.Context ctx) {
-			ctx.setPacketHandled(true);
-			final ServerPlayer player = ctx.getSender();
-			if (!player.isCreative()) {
-				return;
-			}
-			if (player.level().isClientSide) {
-				// kore iru ??
-				return;
-			}
-			if (Config.REQUIRE_OP_TO_USE_REPLACE.get() && player.getServer().getPlayerList().getOps().get(player.getGameProfile())==null) {
-				return;
-			}
-			// validation
-			if (state.getBlock() == Blocks.AIR) {
-				return;
-			}
-			double dist = player.getEyePosition(1.0F).distanceTo(new Vec3(pos.getX(), pos.getY(), pos.getZ()));
-			if (dist > Config.MAX_RANGE.get()) {
-				return;
-			}
-			if (player.level().getBlockState(pos) != checkState) {
-				return;
-			}
-			//
-			ctx.enqueueWork(() -> {
-				player.level().setBlock(pos, state, 2);
-			});
-			return;
+		@Override
+		public ResourceLocation id() {
+			return ID;
 		}
 	}
 
-	// AdjustRange
+	public record AdjustRangePayload(double dist) implements CustomPacketPayload {
+		public static final ResourceLocation ID = new ResourceLocation(LotTweaks.MODID, "adjust_range");
 
-	public static class AdjustRangeMessage {
-
-		private double dist;
-
-		public AdjustRangeMessage(double dist) {
-			this.dist = dist;
-		}
-
-		public AdjustRangeMessage(FriendlyByteBuf buf) {
+		public AdjustRangePayload(FriendlyByteBuf buf) {
 			this(buf.readDouble());
 		}
 
-		public void toBytes(FriendlyByteBuf buf) {
+		@Override
+		public void write(FriendlyByteBuf buf) {
 			buf.writeDouble(this.dist);
 		}
 
-		public void handle(CustomPayloadEvent.Context ctx) {
-			ctx.setPacketHandled(true);
-			final ServerPlayer player = ctx.getSender();
-			if (!player.isCreative()) {
-				return;
-			}
-			ctx.enqueueWork(() -> {
-				if (dist < 0) {
-					return;
-				}
-				dist = Math.min(Config.MAX_RANGE.get(), dist);
-				AdjustRangeHelper.changeRangeModifier(player, dist);
-			});
-			return;
+		@Override
+		public ResourceLocation id() {
+			return ID;
 		}
 	}
 
-	// Hello
+	public record HelloPayload(String version) implements CustomPacketPayload {
+		public static final ResourceLocation ID = new ResourceLocation(LotTweaks.MODID, "hello");
 
-	public static class HelloMessage {
-
-		private String version;
-
-		public HelloMessage(String version) {
-			this.version = version;
+		public HelloPayload(FriendlyByteBuf buf) {
+			this(buf.readCharSequence(buf.readInt(), StandardCharsets.UTF_8).toString());
 		}
 
-		public HelloMessage(FriendlyByteBuf buf) {
-			this.version = buf.readCharSequence(buf.readInt(), StandardCharsets.UTF_8).toString();
-		}
-
-		public void toBytes(FriendlyByteBuf buf) {
+		@Override
+		public void write(FriendlyByteBuf buf) {
 			buf.writeInt(version.length());
 			buf.writeCharSequence(version, StandardCharsets.UTF_8);
 		}
 
-		public void handle(CustomPayloadEvent.Context ctx) {
-			ctx.setPacketHandled(true);
-			LotTweaksClient.setServerVersion(this.version);
+		@Override
+		public ResourceLocation id() {
+			return ID;
 		}
-
 	}
-
 }

@@ -33,15 +33,15 @@ public class LotTweaks {
 		// Register the commonSetup method for modloading
 		modEventBus.addListener(this::commonSetup);
 		
+		// Register network payloads
+		modEventBus.addListener(LTPacketHandler::register);
+		
 		// Register client setup only on client side
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			modEventBus.addListener(this::clientSetup);
 			modEventBus.addListener(LotTweaksClient::onRegisterKeyMappingsEvent);
 			modEventBus.addListener(LotTweaksClient::onRegisterGuiOverlaysEvent);
 		}
-
-		// Register ourselves for server and other game events we are interested in
-		NeoForge.EVENT_BUS.register(this);
 	}
 
 	private void clientSetup(FMLClientSetupEvent event) {
