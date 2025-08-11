@@ -17,10 +17,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.github.lotqwerty.lottweaks.LotTweaks"
+			"com.github.aruma256.lottweaks.LotTweaks"
 		],
 		"client": [
-			"com.github.lotqwerty.lottweaks.LotTweaksClient"
+			"com.github.aruma256.lottweaks.LotTweaksClient"
 		]
 	},
 	"mixins": [

@@ -1,6 +1,6 @@
 {
     "required": true,
-    "package": "com.github.lotqwerty.lottweaks.mixin.client",
+    "package": "com.github.aruma256.lottweaks.mixin.client",
     "compatibilityLevel": "JAVA_21",
     "client": [
         "MouseScrollRedirector",
