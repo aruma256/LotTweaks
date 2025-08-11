@@ -1,4 +1,4 @@
-package com.github.lotqwerty.lottweaks.fabric.mixin;
+package com.github.lotqwerty.lottweaks.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;

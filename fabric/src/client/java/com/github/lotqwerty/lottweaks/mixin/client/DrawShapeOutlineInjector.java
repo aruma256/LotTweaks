@@ -1,11 +1,11 @@
-package com.github.lotqwerty.lottweaks.fabric.mixin;
+package com.github.lotqwerty.lottweaks.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.github.lotqwerty.lottweaks.fabric.DrawBlockOutlineEvent;
+import com.github.lotqwerty.lottweaks.client.event.DrawBlockOutlineEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 

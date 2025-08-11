@@ -3,9 +3,9 @@ package com.github.lotqwerty.lottweaks.client.keys;
 import com.github.lotqwerty.lottweaks.LotTweaks;
 import com.github.lotqwerty.lottweaks.client.LTPacketHandlerClient;
 import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
+import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent;
+import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.lotqwerty.lottweaks.client.renderer.LTTextRenderer;
-import com.github.lotqwerty.lottweaks.fabric.RenderHotbarEvent;
-import com.github.lotqwerty.lottweaks.fabric.RenderHotbarEvent.RenderHotbarListener;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

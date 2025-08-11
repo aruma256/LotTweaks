@@ -5,11 +5,11 @@ import java.util.List;
 import com.github.lotqwerty.lottweaks.LotTweaks;
 import com.github.lotqwerty.lottweaks.client.RotationHelper;
 import com.github.lotqwerty.lottweaks.client.RotationHelper.Group;
+import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent;
+import com.github.lotqwerty.lottweaks.client.event.ScrollEvent;
+import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent.RenderHotbarListener;
+import com.github.lotqwerty.lottweaks.client.event.ScrollEvent.ScrollListener;
 import com.github.lotqwerty.lottweaks.client.renderer.LTRenderer;
-import com.github.lotqwerty.lottweaks.fabric.RenderHotbarEvent;
-import com.github.lotqwerty.lottweaks.fabric.RenderHotbarEvent.RenderHotbarListener;
-import com.github.lotqwerty.lottweaks.fabric.ScrollEvent;
-import com.github.lotqwerty.lottweaks.fabric.ScrollEvent.ScrollListener;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

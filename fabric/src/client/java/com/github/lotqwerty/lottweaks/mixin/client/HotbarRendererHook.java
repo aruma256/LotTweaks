@@ -1,11 +1,11 @@
-package com.github.lotqwerty.lottweaks.fabric.mixin;
+package com.github.lotqwerty.lottweaks.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.github.lotqwerty.lottweaks.fabric.RenderHotbarEvent;
+import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;

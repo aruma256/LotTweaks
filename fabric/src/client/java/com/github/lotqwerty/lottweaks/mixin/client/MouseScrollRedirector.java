@@ -1,10 +1,10 @@
-package com.github.lotqwerty.lottweaks.fabric.mixin;
+package com.github.lotqwerty.lottweaks.mixin.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.github.lotqwerty.lottweaks.fabric.ScrollEvent;
+import com.github.lotqwerty.lottweaks.client.event.ScrollEvent;
 
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.ScrollWheelHandler;
