@@ -1,4 +1,4 @@
-package com.github.lotqwerty.lottweaks.client.renderer;
+package com.github.lotqwerty.lottweaks.renderer;
 
 import java.util.Collection;
 

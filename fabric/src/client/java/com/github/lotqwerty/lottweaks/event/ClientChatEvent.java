@@ -1,4 +1,4 @@
-package com.github.lotqwerty.lottweaks.client.event;
+package com.github.lotqwerty.lottweaks.event;
 
 import java.util.ArrayList;
 

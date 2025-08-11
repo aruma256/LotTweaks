@@ -1,15 +1,15 @@
-package com.github.lotqwerty.lottweaks.client.keys;
+package com.github.lotqwerty.lottweaks.keys;
 
 import java.util.List;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
-import com.github.lotqwerty.lottweaks.client.RotationHelper;
-import com.github.lotqwerty.lottweaks.client.RotationHelper.Group;
-import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent;
-import com.github.lotqwerty.lottweaks.client.event.ScrollEvent;
-import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent.RenderHotbarListener;
-import com.github.lotqwerty.lottweaks.client.event.ScrollEvent.ScrollListener;
-import com.github.lotqwerty.lottweaks.client.renderer.LTRenderer;
+import com.github.lotqwerty.lottweaks.RotationHelper;
+import com.github.lotqwerty.lottweaks.RotationHelper.Group;
+import com.github.lotqwerty.lottweaks.event.RenderHotbarEvent;
+import com.github.lotqwerty.lottweaks.event.ScrollEvent;
+import com.github.lotqwerty.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
+import com.github.lotqwerty.lottweaks.event.ScrollEvent.ScrollListener;
+import com.github.lotqwerty.lottweaks.renderer.LTRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

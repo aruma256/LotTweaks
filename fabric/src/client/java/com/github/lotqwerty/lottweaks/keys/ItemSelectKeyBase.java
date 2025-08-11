@@ -1,4 +1,4 @@
-package com.github.lotqwerty.lottweaks.client.keys;
+package com.github.lotqwerty.lottweaks.keys;
 
 import java.util.Deque;
 import java.util.LinkedList;

@@ -1,4 +1,4 @@
-package com.github.lotqwerty.lottweaks.client.renderer;
+package com.github.lotqwerty.lottweaks.renderer;
 
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;

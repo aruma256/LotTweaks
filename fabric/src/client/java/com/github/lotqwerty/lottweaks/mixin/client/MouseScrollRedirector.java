@@ -4,7 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import com.github.lotqwerty.lottweaks.client.event.ScrollEvent;
+import com.github.lotqwerty.lottweaks.event.ScrollEvent;
 
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.ScrollWheelHandler;

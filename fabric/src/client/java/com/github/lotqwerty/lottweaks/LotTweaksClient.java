@@ -1,20 +1,20 @@
-package com.github.lotqwerty.lottweaks.client;
+package com.github.lotqwerty.lottweaks;
 
 import org.lwjgl.glfw.GLFW;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
-import com.github.lotqwerty.lottweaks.client.event.ClientChatEvent;
-import com.github.lotqwerty.lottweaks.client.event.DrawBlockOutlineEvent;
-import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent;
-import com.github.lotqwerty.lottweaks.client.event.ScrollEvent;
-import com.github.lotqwerty.lottweaks.client.event.ClientChatEvent.ClientChatEventListener;
-import com.github.lotqwerty.lottweaks.client.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
-import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent.RenderHotbarListener;
-import com.github.lotqwerty.lottweaks.client.event.ScrollEvent.ScrollListener;
-import com.github.lotqwerty.lottweaks.client.keys.AdjustRangeKey;
-import com.github.lotqwerty.lottweaks.client.keys.ExPickKey;
-import com.github.lotqwerty.lottweaks.client.keys.ReplaceKey;
-import com.github.lotqwerty.lottweaks.client.keys.RotateKey;
+import com.github.lotqwerty.lottweaks.event.ClientChatEvent;
+import com.github.lotqwerty.lottweaks.event.DrawBlockOutlineEvent;
+import com.github.lotqwerty.lottweaks.event.RenderHotbarEvent;
+import com.github.lotqwerty.lottweaks.event.ScrollEvent;
+import com.github.lotqwerty.lottweaks.event.ClientChatEvent.ClientChatEventListener;
+import com.github.lotqwerty.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
+import com.github.lotqwerty.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
+import com.github.lotqwerty.lottweaks.event.ScrollEvent.ScrollListener;
+import com.github.lotqwerty.lottweaks.keys.AdjustRangeKey;
+import com.github.lotqwerty.lottweaks.keys.ExPickKey;
+import com.github.lotqwerty.lottweaks.keys.ReplaceKey;
+import com.github.lotqwerty.lottweaks.keys.RotateKey;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;

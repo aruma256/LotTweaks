@@ -20,7 +20,7 @@
 			"com.github.lotqwerty.lottweaks.LotTweaks"
 		],
 		"client": [
-			"com.github.lotqwerty.lottweaks.client.LotTweaksClient"
+			"com.github.lotqwerty.lottweaks.LotTweaksClient"
 		]
 	},
 	"mixins": [

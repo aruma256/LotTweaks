@@ -1,11 +1,11 @@
-package com.github.lotqwerty.lottweaks.client.keys;
+package com.github.lotqwerty.lottweaks.keys;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
-import com.github.lotqwerty.lottweaks.client.LTPacketHandlerClient;
-import com.github.lotqwerty.lottweaks.client.LotTweaksClient;
-import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent;
-import com.github.lotqwerty.lottweaks.client.event.RenderHotbarEvent.RenderHotbarListener;
-import com.github.lotqwerty.lottweaks.client.renderer.LTTextRenderer;
+import com.github.lotqwerty.lottweaks.LTPacketHandlerClient;
+import com.github.lotqwerty.lottweaks.LotTweaksClient;
+import com.github.lotqwerty.lottweaks.event.RenderHotbarEvent;
+import com.github.lotqwerty.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
+import com.github.lotqwerty.lottweaks.renderer.LTTextRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

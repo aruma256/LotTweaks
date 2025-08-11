@@ -1,9 +1,9 @@
-package com.github.lotqwerty.lottweaks.client;
+package com.github.lotqwerty.lottweaks;
 
 import java.util.StringJoiner;
 
 import com.github.lotqwerty.lottweaks.LotTweaks;
-import com.github.lotqwerty.lottweaks.client.RotationHelper.Group;
+import com.github.lotqwerty.lottweaks.RotationHelper.Group;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

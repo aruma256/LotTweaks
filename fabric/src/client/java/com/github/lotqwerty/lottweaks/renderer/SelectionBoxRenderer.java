@@ -1,4 +1,4 @@
-package com.github.lotqwerty.lottweaks.client.renderer;
+package com.github.lotqwerty.lottweaks.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
