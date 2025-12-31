@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 LotTweaks is a Minecraft mod that adds productivity tweaks for builders in Creative mode. The repository contains two implementations:
-- `fabric/` - Fabric mod loader (Minecraft 1.21.8, mod version 2.3.6)
+- `fabric/` - Fabric mod loader (Minecraft 1.21.8, mod version 2.3.6) **← 現在の主な作業対象**
 - `forge/` - Forge mod loader (Minecraft 1.21, mod version 2.2.5)
 
 ## Development Environment
