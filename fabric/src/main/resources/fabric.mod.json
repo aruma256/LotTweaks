@@ -10,7 +10,7 @@
 	],
 	"contact": {
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/lottweaks",
-		"sources": "https://github.com/aruma256/LotTweaksFabric"
+		"sources": "https://github.com/aruma256/LotTweaks"
 	},
 	"license": "",
 	"icon": "assets/lottweaks/icon.png",
