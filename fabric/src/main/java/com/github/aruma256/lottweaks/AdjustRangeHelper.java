@@ -3,14 +3,14 @@ package com.github.aruma256.lottweaks;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 
 public class AdjustRangeHelper implements ServerTickEvents.StartTick {
 
-	private static final ResourceLocation _RESOURCE_LOCATION = ResourceLocation.fromNamespaceAndPath(LotTweaks.MODID, "extension");
+	private static final Identifier _RESOURCE_LOCATION = Identifier.fromNamespaceAndPath(LotTweaks.MODID, "extension");
 
 	@Override
 	public void onStartTick(MinecraftServer server) {

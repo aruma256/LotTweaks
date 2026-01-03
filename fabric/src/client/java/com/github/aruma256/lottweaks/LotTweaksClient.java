@@ -29,13 +29,13 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class LotTweaksClient implements ClientModInitializer, ClientPlayConnectionEvents.Init, ClientPlayConnectionEvents.Join
 {
 	private static String serverVersion = "0";
-	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("lottweaks", "keys"));
+	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lottweaks", "keys"));
 	private static KeyMapping[] keyMappings = {
 			new ExPickKey(GLFW.GLFW_KEY_V, CATEGORY),
 			new RotateKey(GLFW.GLFW_KEY_R, CATEGORY),

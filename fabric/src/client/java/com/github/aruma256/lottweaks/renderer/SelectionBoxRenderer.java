@@ -22,23 +22,24 @@ public class SelectionBoxRenderer {
 			return false;
 		}
 
-		Vec3 vector3d = activeRenderInfo.getPosition();
+		Vec3 vector3d = activeRenderInfo.position();
 		double d0 = vector3d.x();
 		double d1 = vector3d.y();
 		double d2 = vector3d.z();
 
-		renderHitOutline(matrixStack, buffer, activeRenderInfo.getEntity(), d0, d1, d2, blockPos);
+		renderHitOutline(matrixStack, buffer, activeRenderInfo.entity(), d0, d1, d2, blockPos);
 
 		return true;
 	}
 
 	//from WorldRenderer.class
 	private static void renderHitOutline(PoseStack matrixStackIn, VertexConsumer bufferIn, Entity entity, double xIn, double yIn, double zIn, BlockPos blockPosIn) {
-		renderShape(matrixStackIn, bufferIn, CUBE, (double)blockPosIn.getX() - xIn, (double)blockPosIn.getY() - yIn, (double)blockPosIn.getZ() - zIn, 1.0F, 0.0F, 0.0F, 0.4F);
+		float lineWidth = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
+		renderShape(matrixStackIn, bufferIn, CUBE, (double)blockPosIn.getX() - xIn, (double)blockPosIn.getY() - yIn, (double)blockPosIn.getZ() - zIn, 1.0F, 0.0F, 0.0F, 0.4F, lineWidth);
 	}
 
 	//from LevelRenderer.class
-	private static void renderShape(PoseStack matrixStackIn, VertexConsumer bufferIn, VoxelShape shapeIn, double xIn, double yIn, double zIn, float red, float green, float blue, float alpha) {
+	private static void renderShape(PoseStack matrixStackIn, VertexConsumer bufferIn, VoxelShape shapeIn, double xIn, double yIn, double zIn, float red, float green, float blue, float alpha, float lineWidth) {
 		PoseStack.Pose pose = matrixStackIn.last();
 		shapeIn.forAllEdges((ax, ay, az, bx, by, bz) -> {
 			float x = (float)(bx - ax);
@@ -48,8 +49,8 @@ public class SelectionBoxRenderer {
 			x = x / d;
 			y = y / d;
 			z = z / d;
-			bufferIn.addVertex(pose, (float)(ax + xIn), (float)(ay + yIn), (float)(az + zIn)).setColor(red, green, blue, alpha).setNormal(pose, x, y, z);
-			bufferIn.addVertex(pose, (float)(bx + xIn), (float)(by + yIn), (float)(bz + zIn)).setColor(red, green, blue, alpha).setNormal(pose, x, y, z);
+			bufferIn.addVertex(pose, (float)(ax + xIn), (float)(ay + yIn), (float)(az + zIn)).setColor(red, green, blue, alpha).setNormal(pose, x, y, z).setLineWidth(lineWidth);
+			bufferIn.addVertex(pose, (float)(bx + xIn), (float)(by + yIn), (float)(bz + zIn)).setColor(red, green, blue, alpha).setNormal(pose, x, y, z).setLineWidth(lineWidth);
 		});
 	}
 
