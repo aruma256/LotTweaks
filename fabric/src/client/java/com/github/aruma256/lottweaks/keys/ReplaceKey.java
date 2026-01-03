@@ -12,6 +12,7 @@ import com.github.aruma256.lottweaks.renderer.SelectionBoxRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -28,7 +29,7 @@ public class ReplaceKey extends LTKeyBase implements RenderHotbarListener, DrawB
 
 	private BlockState lockedBlockState = null;
 
-	public ReplaceKey(int keyCode, String category) {
+	public ReplaceKey(int keyCode, KeyMapping.Category category) {
 		super("lottweaks-replace", keyCode, category);
 	}
 

@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
@@ -16,7 +17,7 @@ public class ItemSelectKeyBase extends LTKeyBase {
 	protected int lastRotateTime = -1;
 	protected byte rotateDirection = 0;
 
-	public ItemSelectKeyBase(String description, int keyCode, String category) {
+	public ItemSelectKeyBase(String description, int keyCode, KeyMapping.Category category) {
 		super(description, keyCode, category);
 	}
 

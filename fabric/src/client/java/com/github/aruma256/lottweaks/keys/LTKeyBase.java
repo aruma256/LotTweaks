@@ -13,7 +13,7 @@ public class LTKeyBase extends KeyMapping implements ClientTickEvents.EndTick {
 	protected int doubleTapTick = 0;
 	private static final int DOUBLE_TAP_MAX = 5;
 	
-	public LTKeyBase(String description, int keyCode, String category) {
+	public LTKeyBase(String description, int keyCode, KeyMapping.Category category) {
 		super(description, keyCode, category);
 	}
 

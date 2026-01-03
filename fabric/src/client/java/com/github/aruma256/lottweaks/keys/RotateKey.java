@@ -13,6 +13,7 @@ import com.github.aruma256.lottweaks.renderer.LTRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,7 +22,7 @@ public class RotateKey extends ItemSelectKeyBase implements ScrollListener, Rend
 
 	private int phase = 0;
 
-	public RotateKey(int keyCode, String category) {
+	public RotateKey(int keyCode, KeyMapping.Category category) {
 		super("lottweaks-rotate", keyCode, category);
 	}
 

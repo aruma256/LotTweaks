@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -56,7 +57,7 @@ public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, Rend
 
 	private boolean isHistoryMode = false;
 
-	public ExPickKey(int keyCode, String category) {
+	public ExPickKey(int keyCode, KeyMapping.Category category) {
 		super("Ex Pick", keyCode, category);
 		AttackBlockCallback.EVENT.register(this);
 	}
@@ -219,7 +220,7 @@ public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, Rend
 	}
 
 	public void onBreakBlock(final LeftClickBlock event) {
-		if (!event.getWorld().isClientSide) {
+		if (!event.getWorld().isClientSide()) {
 			return;
 		}
 		if (!event.getEntity().isCreative()) {

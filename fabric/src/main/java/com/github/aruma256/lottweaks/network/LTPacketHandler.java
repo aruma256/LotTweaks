@@ -77,11 +77,11 @@ public class LTPacketHandler {
 			if (!player.isCreative()) {
 				return;
 			}
-			if (player.level().isClientSide) {
+			if (player.level().isClientSide()) {
 				// kore iru ??
 				return;
 			}
-			if (LotTweaks.CONFIG.REQUIRE_OP_TO_USE_REPLACE && player.getServer().getPlayerList().getOps().get(player.getGameProfile())==null) {
+			if (LotTweaks.CONFIG.REQUIRE_OP_TO_USE_REPLACE && context.server().getPlayerList().getOps().get(player.nameAndId()) == null) {
 				return;
 			}
 			// validation

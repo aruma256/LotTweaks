@@ -29,16 +29,18 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 @Environment(EnvType.CLIENT)
 public class LotTweaksClient implements ClientModInitializer, ClientPlayConnectionEvents.Init, ClientPlayConnectionEvents.Join
 {
 	private static String serverVersion = "0";
+	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("lottweaks", "keys"));
 	private static KeyMapping[] keyMappings = {
-			new ExPickKey(GLFW.GLFW_KEY_V, LotTweaks.NAME),
-			new RotateKey(GLFW.GLFW_KEY_R, LotTweaks.NAME),
-			new ReplaceKey(GLFW.GLFW_KEY_G, LotTweaks.NAME),
-			new AdjustRangeKey(GLFW.GLFW_KEY_U, LotTweaks.NAME)
+			new ExPickKey(GLFW.GLFW_KEY_V, CATEGORY),
+			new RotateKey(GLFW.GLFW_KEY_R, CATEGORY),
+			new ReplaceKey(GLFW.GLFW_KEY_G, CATEGORY),
+			new AdjustRangeKey(GLFW.GLFW_KEY_U, CATEGORY)
 	};
 
 	public LotTweaksClient() {

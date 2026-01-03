@@ -9,6 +9,7 @@ import com.github.aruma256.lottweaks.renderer.LTTextRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.phys.HitResult;
@@ -18,8 +19,8 @@ public class AdjustRangeKey extends LTKeyBase implements RenderHotbarListener {
 
 	private static final float DEFAULT_REACH_DISTANCE = 6;
 	private static float reachDistance = DEFAULT_REACH_DISTANCE;
-	
-	public AdjustRangeKey(int keyCode, String category) {
+
+	public AdjustRangeKey(int keyCode, KeyMapping.Category category) {
 		super("lottweaks-adjustrange", keyCode, category);
 	}
 
