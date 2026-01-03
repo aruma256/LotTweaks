@@ -10,10 +10,11 @@ LotTweaks is a Minecraft mod that adds productivity tweaks for builders in Creat
 
 ## Development Environment
 
-This repository is on a Windows filesystem accessed from WSL. Git and Gradle must be run via PowerShell:
-```bash
-powershell.exe -Command "cd fabric; ./gradlew build"
-powershell.exe -Command "git status"
+This is a Windows native environment. Run Git and Gradle directly:
+```cmd
+cd fabric
+.\gradlew build
+git status
 ```
 
 ## Build Commands
