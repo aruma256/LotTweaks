@@ -43,17 +43,21 @@ distributionUrl=https\://services.gradle.org/distributions/gradle-X.XX-bin.zip
 ## 5. プロジェクトをリフレッシュ
 
 ```bash
-./gradlew cleanloom
 ./gradlew --refresh-dependencies
+./gradlew genSources vscode
 ```
 
 IDEでGradleプロジェクトを再インポート（ユーザーに依頼）。
 
-## 6. コードの修正
+## 6. 依存関係の更新をコミット
+
+コード修正前に、ここまでの変更（gradle.properties, fabric.mod.json, gradle-wrapper.properties）をコミットする。
+
+## 7. コードの修正
 
 - コンパイルエラーを確認し、API変更に対応
 - Fabric公式ブログで破壊的変更を確認
 
-## 7. 動作確認
+## 8. 動作確認
 
 ユーザーに依頼
