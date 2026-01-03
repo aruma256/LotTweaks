@@ -236,7 +236,7 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 | Step | 説明 | 状態 | 完了日 |
 |------|------|------|--------|
 | 0 | バージョン 2.3.7 に更新 | ✅ 完了 | 2026-01-03 |
-| 1 | RotationHelper → palette/ 分割 + テスト（TDD） | 未着手 | - |
+| 1 | RotationHelper → palette/ 分割 + テスト（TDD） | ✅ 完了 | 2026-01-04 |
 | 2 | キーバインディングのリネーム | 未着手 | - |
 | 3 | レンダラーのリネーム | 未着手 | - |
 | 4 | パケットハンドラーの整理（オプション） | 未着手 | - |
