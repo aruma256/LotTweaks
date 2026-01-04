@@ -7,7 +7,7 @@ import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.aruma256.lottweaks.event.ScrollEvent.ScrollListener;
-import com.github.aruma256.lottweaks.renderer.LTRenderer;
+import com.github.aruma256.lottweaks.render.ItemStackRenderer;
 import com.github.aruma256.lottweaks.mixin.client.VanillaPickInvoker;
 
 import net.fabricmc.api.EnvType;
@@ -185,11 +185,11 @@ public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, Re
 		if (!isHistoryMode) {
 			int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 8;
 			int y = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2 - 8;
-			LTRenderer.renderItemStacks(event.getGuiGraphics(), candidates, x, y, pressTime, partialTicks, lastRotateTime, rotateDirection);
+			ItemStackRenderer.renderItemStacks(event.getGuiGraphics(), candidates, x, y, pressTime, partialTicks, lastRotateTime, rotateDirection);
 		} else {
 			int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 90 + Minecraft.getInstance().player.getInventory().getSelectedSlot() * 20 + 2;
 			int y = Minecraft.getInstance().getWindow().getGuiScaledHeight() - 16 - 3;
-			LTRenderer.renderItemStacks(event.getGuiGraphics(), candidates, x, y, pressTime, partialTicks, lastRotateTime, rotateDirection, LTRenderer.RenderMode.LINE);
+			ItemStackRenderer.renderItemStacks(event.getGuiGraphics(), candidates, x, y, pressTime, partialTicks, lastRotateTime, rotateDirection, ItemStackRenderer.RenderMode.LINE);
 		}
 	}
 

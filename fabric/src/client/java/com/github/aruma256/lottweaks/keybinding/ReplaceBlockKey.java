@@ -7,8 +7,8 @@ import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
-import com.github.aruma256.lottweaks.renderer.LTTextRenderer;
-import com.github.aruma256.lottweaks.renderer.SelectionBoxRenderer;
+import com.github.aruma256.lottweaks.render.HudTextRenderer;
+import com.github.aruma256.lottweaks.render.SelectionBoxRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -72,7 +72,7 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, Dr
 			return;
 		}
 		if (!LotTweaksClient.requireServerVersion("2.2.1")) {
-			LTTextRenderer.showServerSideRequiredMessage(event.getGuiGraphics(), "2.2.1");
+			HudTextRenderer.showServerSideRequiredMessage(event.getGuiGraphics(), "2.2.1");
 			return;
 		}
 		if (this.pressTime==1 || this.pressTime > LotTweaks.CONFIG.REPLACE_INTERVAL) {

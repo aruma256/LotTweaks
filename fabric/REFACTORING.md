@@ -194,7 +194,7 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 ---
 
 ### Step 3: レンダラーのリネーム
-**状態: 未着手**
+**状態: ✅ 完了**
 
 1. パッケージ名変更: `renderer/` → `render/`
 2. クラス名変更:
@@ -250,7 +250,7 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 | 0 | バージョン 2.3.7 に更新 | ✅ 完了 | 2026-01-03 |
 | 1 | RotationHelper → palette/ 分割 + テスト（TDD） | ✅ 完了 | 2026-01-04 |
 | 2 | キーバインディングのリネーム | ✅ 完了 | 2026-01-04 |
-| 3 | レンダラーのリネーム | 未着手 | - |
+| 3 | レンダラーのリネーム | ✅ 完了 | 2026-01-04 |
 | 4 | パケットハンドラーの整理（オプション） | 未着手 | - |
 | 5 | 最終レビュー | 未着手 | - |
 

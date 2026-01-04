@@ -5,7 +5,7 @@ import com.github.aruma256.lottweaks.LTPacketHandlerClient;
 import com.github.aruma256.lottweaks.LotTweaksClient;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
-import com.github.aruma256.lottweaks.renderer.LTTextRenderer;
+import com.github.aruma256.lottweaks.render.HudTextRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +34,7 @@ public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 			return;
 		}
 		if (!LotTweaksClient.requireServerVersion("2.3.0")) {
-			LTTextRenderer.showServerSideRequiredMessage(guiGraphics, Minecraft.getInstance().getWindow(), "2.3.0");
+			HudTextRenderer.showServerSideRequiredMessage(guiGraphics, Minecraft.getInstance().getWindow(), "2.3.0");
 			return;
 		}
 		// Update dist
@@ -51,7 +51,7 @@ public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 		// Render
 		int distInt = (int)dist;
 		String distStr = String.valueOf(distInt);
-		LTTextRenderer.showMessage(guiGraphics, Minecraft.getInstance().getWindow(), distStr);
+		HudTextRenderer.showMessage(guiGraphics, Minecraft.getInstance().getWindow(), distStr);
 	}
 
 	public static float getRange() {
