@@ -1,4 +1,4 @@
-package com.github.aruma256.lottweaks.keys;
+package com.github.aruma256.lottweaks.keybinding;
 
 import com.github.aruma256.lottweaks.LotTweaks;
 import com.github.aruma256.lottweaks.LTPacketHandlerClient;
@@ -15,12 +15,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.phys.HitResult;
 
 @Environment(EnvType.CLIENT)
-public class AdjustRangeKey extends LTKeyBase implements RenderHotbarListener {
+public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 
 	private static final float DEFAULT_REACH_DISTANCE = 6;
 	private static float reachDistance = DEFAULT_REACH_DISTANCE;
 
-	public AdjustRangeKey(int keyCode, KeyMapping.Category category) {
+	public ReachExtensionKey(int keyCode, KeyMapping.Category category) {
 		super("lottweaks-adjustrange", keyCode, category);
 	}
 

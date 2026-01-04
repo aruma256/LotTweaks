@@ -1,4 +1,4 @@
-package com.github.aruma256.lottweaks.keys;
+package com.github.aruma256.lottweaks.keybinding;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -7,41 +7,39 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 
 @Environment(EnvType.CLIENT)
-public class LTKeyBase extends KeyMapping implements ClientTickEvents.EndTick {
+public class KeyBase extends KeyMapping implements ClientTickEvents.EndTick {
 
 	protected int pressTime = 0;
 	protected int doubleTapTick = 0;
 	private static final int DOUBLE_TAP_MAX = 5;
-	
-	public LTKeyBase(String description, int keyCode, KeyMapping.Category category) {
+
+	public KeyBase(String description, int keyCode, KeyMapping.Category category) {
 		super(description, keyCode, category);
 	}
 
 	@Override
 	public void onEndTick(final Minecraft client) {
-//		if (event.getPhase() == EventPriority.NORMAL) {
-			if (this.isDown()) {
-				this.pressTime = Math.min(12345, this.pressTime + 1);
-				if (this.pressTime == 1) {
-					this.onKeyPressStart();
-					this.doubleTapTick = DOUBLE_TAP_MAX;
-				}
-				whilePressed();
-			} else {
-				if (this.pressTime > 0) {
-					this.onKeyReleased();
-					this.pressTime = 0;
-				}
-				if (this.doubleTapTick > 0) {
-					this.doubleTapTick--;
-				}
+		if (this.isDown()) {
+			this.pressTime = Math.min(12345, this.pressTime + 1);
+			if (this.pressTime == 1) {
+				this.onKeyPressStart();
+				this.doubleTapTick = DOUBLE_TAP_MAX;
 			}
-//		}
+			whilePressed();
+		} else {
+			if (this.pressTime > 0) {
+				this.onKeyReleased();
+				this.pressTime = 0;
+			}
+			if (this.doubleTapTick > 0) {
+				this.doubleTapTick--;
+			}
+		}
 	}
 
 	protected void onKeyPressStart() {
 	}
-	
+
 	protected void whilePressed() {
 	}
 

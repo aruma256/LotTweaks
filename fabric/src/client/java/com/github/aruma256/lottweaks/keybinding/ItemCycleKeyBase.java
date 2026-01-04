@@ -1,4 +1,4 @@
-package com.github.aruma256.lottweaks.keys;
+package com.github.aruma256.lottweaks.keybinding;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -11,13 +11,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
-public class ItemSelectKeyBase extends LTKeyBase {
+public class ItemCycleKeyBase extends KeyBase {
 
 	protected final Deque<ItemStack> candidates = new LinkedList<>();
 	protected int lastRotateTime = -1;
 	protected byte rotateDirection = 0;
 
-	public ItemSelectKeyBase(String description, int keyCode, KeyMapping.Category category) {
+	public ItemCycleKeyBase(String description, int keyCode, KeyMapping.Category category) {
 		super(description, keyCode, category);
 	}
 
@@ -29,7 +29,7 @@ public class ItemSelectKeyBase extends LTKeyBase {
 		}
 		candidates.add(itemStack);
 	}
-	
+
 	protected void rotateCandidatesForward() {
 		candidates.addFirst(candidates.pollLast());
 		this.updateLastRotateTime();
@@ -66,5 +66,5 @@ public class ItemSelectKeyBase extends LTKeyBase {
 	private void updateLastRotateTime() {
 		this.lastRotateTime = this.pressTime;
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package com.github.aruma256.lottweaks.keys;
+package com.github.aruma256.lottweaks.keybinding;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 @Environment(EnvType.CLIENT)
-public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, RenderHotbarListener, AttackBlockCallback {
+public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, RenderHotbarListener, AttackBlockCallback {
 
 	private static final int HISTORY_SIZE = 10;
 
@@ -57,7 +57,7 @@ public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, Rend
 
 	private boolean isHistoryMode = false;
 
-	public ExPickKey(int keyCode, KeyMapping.Category category) {
+	public SmartPickKey(int keyCode, KeyMapping.Category category) {
 		super("Ex Pick", keyCode, category);
 		AttackBlockCallback.EVENT.register(this);
 	}
@@ -83,7 +83,7 @@ public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, Rend
 		}
 	}
 
-	private static boolean Forge_onPickBlock(HitResult rayTraceResult) {
+	private static boolean pickBlockAtTarget(HitResult rayTraceResult) {
 		Minecraft mc = Minecraft.getInstance();
 		final HitResult tmpHitResult = mc.hitResult;
 		mc.hitResult = rayTraceResult;
@@ -107,7 +107,7 @@ public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, Rend
 		if (rayTraceResult == null) {
 			return;
 		}
-		boolean succeeded = Forge_onPickBlock(rayTraceResult);
+		boolean succeeded = pickBlockAtTarget(rayTraceResult);
 		if (!succeeded) {
 			return;
 		}
@@ -195,41 +195,19 @@ public class ExPickKey extends ItemSelectKeyBase implements ScrollListener, Rend
 
 	@Override
 	public InteractionResult interact(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
-		onBreakBlock(new LeftClickBlock(player, world, pos));
+		onBlockAttacked(player, world, pos);
 		return InteractionResult.PASS;
 	}
 
-	static class LeftClickBlock {
-		private Player player;
-		private Level world;
-		private BlockPos pos;
-		public LeftClickBlock(Player player, Level world, BlockPos pos) {
-			this.player = player;
-			this.world = world;
-			this.pos = pos;
-		}
-		public Player getEntity() {
-			return this.player;
-		}
-		public Level getWorld() {
-			return this.world;
-		}
-		public BlockPos getPos() {
-			return this.pos;
-		}
-	}
-
-	public void onBreakBlock(final LeftClickBlock event) {
-		if (!event.getWorld().isClientSide()) {
+	private void onBlockAttacked(Player player, Level world, BlockPos pos) {
+		if (!world.isClientSide()) {
 			return;
 		}
-		if (!event.getEntity().isCreative()) {
+		if (!player.isCreative()) {
 			return;
 		}
-		//
-		Minecraft mc = Minecraft.getInstance();
-		BlockState blockState = event.getWorld().getBlockState(event.getPos());
-		ItemStack itemStack = blockState.getCloneItemStack(event.getWorld(), event.getPos(), true);
+		BlockState blockState = world.getBlockState(pos);
+		ItemStack itemStack = blockState.getCloneItemStack(world, pos, true);
 		addToHistory(itemStack);
 	}
 

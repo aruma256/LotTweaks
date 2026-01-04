@@ -161,7 +161,7 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 ---
 
 ### Step 2: キーバインディングのリネームと整理
-**状態: 未着手**
+**状態: ✅ 完了**
 
 1. パッケージ名変更: `keys/` → `keybinding/`
 2. クラス名変更:
@@ -175,9 +175,21 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 3. `SmartPickKey.LeftClickBlock` 内部クラスの削除
    - Fabric APIを直接使用するようリファクタリング
 
+4. PaletteKeyはpaletteパッケージのItemPaletteを直接使用するよう更新
+
+5. 未使用のRotationHelper.javaと古いkeysパッケージを削除
+
 **成果物:**
+- `keybinding/` パッケージに6クラス
+  - `KeyBase.java` (旧 LTKeyBase)
+  - `ItemCycleKeyBase.java` (旧 ItemSelectKeyBase)
+  - `SmartPickKey.java` (旧 ExPickKey)
+  - `PaletteKey.java` (旧 RotateKey)
+  - `ReplaceBlockKey.java` (旧 ReplaceKey)
+  - `ReachExtensionKey.java` (旧 AdjustRangeKey)
 - 命名の明確化
-- 不要なワークアラウンドの削除
+- 不要なワークアラウンドの削除（LeftClickBlock内部クラス）
+- RotationHelper.javaのレガシーファサードを削除（直接paletteパッケージを使用）
 
 ---
 
@@ -237,7 +249,7 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 |------|------|------|--------|
 | 0 | バージョン 2.3.7 に更新 | ✅ 完了 | 2026-01-03 |
 | 1 | RotationHelper → palette/ 分割 + テスト（TDD） | ✅ 完了 | 2026-01-04 |
-| 2 | キーバインディングのリネーム | 未着手 | - |
+| 2 | キーバインディングのリネーム | ✅ 完了 | 2026-01-04 |
 | 3 | レンダラーのリネーム | 未着手 | - |
 | 4 | パケットハンドラーの整理（オプション） | 未着手 | - |
 | 5 | 最終レビュー | 未着手 | - |
