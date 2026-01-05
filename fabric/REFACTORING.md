@@ -212,9 +212,11 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 ---
 
 ### Step 4: パケットハンドラーの整理（オプション）
-**状態: 未着手**
+**状態: ⏭️ スキップ**
 
-現状の構造は許容範囲だが、以下を検討:
+現状の構造は許容範囲であり、分割のメリットが小さいためスキップ。
+
+以下は将来の検討事項として残す:
 
 1. 各メッセージタイプを別ファイルに分離
    - `packet/ReplacePacket.java`
@@ -230,13 +232,17 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 ---
 
 ### Step 5: 最終レビューとクリーンアップ
-**状態: 未着手**
+**状態: ✅ 完了**
 
-1. 未使用コードの削除
-2. Javadocコメントの追加（公開APIのみ）
-3. `ClientChatEvent` の削除（未使用）
-4. コンパイル警告の解消
-5. 全テストの実行と確認
+1. ~~未使用コードの削除~~ → スキップ（特になし）
+2. ~~Javadocコメントの追加（公開APIのみ）~~ → スキップ
+3. ✅ `ClientChatEvent` の削除（未使用）
+4. ✅ コンパイル警告の解消
+   - build.gradle: Gradle 10 deprecation warning 修正
+   - build.gradle: `-Xlint:all` 追加
+   - SmartPickKey.java: `@SuppressWarnings("this-escape")` + TODO
+   - LotTweaksCommand.java: `@SuppressWarnings("serial")` + TODO
+5. ✅ 全テストの実行と確認（30テスト全パス）
 
 **成果物:**
 - クリーンなコードベース
@@ -251,8 +257,8 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 | 1 | RotationHelper → palette/ 分割 + テスト（TDD） | ✅ 完了 | 2026-01-04 |
 | 2 | キーバインディングのリネーム | ✅ 完了 | 2026-01-04 |
 | 3 | レンダラーのリネーム | ✅ 完了 | 2026-01-04 |
-| 4 | パケットハンドラーの整理（オプション） | 未着手 | - |
-| 5 | 最終レビュー | 未着手 | - |
+| 4 | パケットハンドラーの整理（オプション） | ⏭️ スキップ | - |
+| 5 | 最終レビュー | ✅ 完了 | 2026-01-05 |
 
 
 ## 参考情報

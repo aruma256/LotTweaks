@@ -103,9 +103,11 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 		LotTweaksClient.showErrorLogToChat();
 	}
 
+	// TODO: 例外を使わずにエラーハンドリングを行う設計に変更する
+	@SuppressWarnings("serial")
 	private static final class LotTweaksCommandRuntimeException extends RuntimeException {
 		public LotTweaksCommandRuntimeException(String message) {
-	        super(message);
-	    }
+			super(message);
+		}
 	}
 }
