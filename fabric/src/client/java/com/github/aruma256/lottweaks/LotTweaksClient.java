@@ -2,7 +2,6 @@ package com.github.aruma256.lottweaks;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.github.aruma256.lottweaks.LotTweaks;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent;

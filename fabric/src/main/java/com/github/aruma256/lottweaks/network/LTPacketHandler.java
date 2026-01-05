@@ -4,10 +4,6 @@ import java.nio.charset.StandardCharsets;
 
 import com.github.aruma256.lottweaks.AdjustRangeHelper;
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.network.LTPacketHandler.AdjustRangeMessage;
-import com.github.aruma256.lottweaks.network.LTPacketHandler.HelloMessage;
-import com.github.aruma256.lottweaks.network.LTPacketHandler.ReplaceMessage;
-
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,7 +11,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;

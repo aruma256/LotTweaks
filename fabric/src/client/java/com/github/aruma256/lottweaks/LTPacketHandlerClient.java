@@ -1,12 +1,8 @@
 package com.github.aruma256.lottweaks;
 
 import com.github.aruma256.lottweaks.network.LTPacketHandler;
-import com.github.aruma256.lottweaks.network.LTPacketHandler.HelloMessage;
-
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class LTPacketHandlerClient extends LTPacketHandler {
