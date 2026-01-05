@@ -3,11 +3,9 @@ package com.github.aruma256.lottweaks;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.event.ClientChatEvent;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent;
-import com.github.aruma256.lottweaks.event.ClientChatEvent.ClientChatEventListener;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.aruma256.lottweaks.event.ScrollEvent.ScrollListener;
@@ -65,16 +63,13 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	private static void registerToMyEventBus(Object obj) {
 		if (obj instanceof ClientTickEvents.EndTick) {
-			ClientTickEvents.END_CLIENT_TICK.register((ClientTickEvents.EndTick)obj);			
+			ClientTickEvents.END_CLIENT_TICK.register((ClientTickEvents.EndTick)obj);
 		}
 		if (obj instanceof RenderHotbarListener) {
 			RenderHotbarEvent.registerListener((RenderHotbarListener)obj);
 		}
 		if (obj instanceof ScrollListener) {
 			ScrollEvent.registerListener((ScrollListener)obj);
-		}
-		if (obj instanceof ClientChatEventListener) {
-			ClientChatEvent.registerListener((ClientChatEventListener)obj);
 		}
 		if (obj instanceof DrawBlockOutlineListener) {
 			DrawBlockOutlineEvent.registerListener((DrawBlockOutlineListener)obj);
