@@ -1,4 +1,4 @@
-package com.github.aruma256.lottweaks.keys;
+package com.github.aruma256.lottweaks.keybinding;
 
 import com.github.aruma256.lottweaks.LotTweaks;
 import com.github.aruma256.lottweaks.LTPacketHandlerClient;
@@ -7,8 +7,8 @@ import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
-import com.github.aruma256.lottweaks.renderer.LTTextRenderer;
-import com.github.aruma256.lottweaks.renderer.SelectionBoxRenderer;
+import com.github.aruma256.lottweaks.render.HudTextRenderer;
+import com.github.aruma256.lottweaks.render.SelectionBoxRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,11 +25,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 @Environment(EnvType.CLIENT)
-public class ReplaceKey extends LTKeyBase implements RenderHotbarListener, DrawBlockOutlineListener {
+public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, DrawBlockOutlineListener {
 
 	private BlockState lockedBlockState = null;
 
-	public ReplaceKey(int keyCode, KeyMapping.Category category) {
+	public ReplaceBlockKey(int keyCode, KeyMapping.Category category) {
 		super("lottweaks-replace", keyCode, category);
 	}
 
@@ -68,16 +68,11 @@ public class ReplaceKey extends LTKeyBase implements RenderHotbarListener, DrawB
 
 	@Override
 	public void onRenderHotbar(RenderHotbarEvent event) {
-		/*
-		if (event.getPhase() != EventPriority.NORMAL) {
-			return;
-		}
-		*/
 		if (this.pressTime == 0) {
 			return;
 		}
 		if (!LotTweaksClient.requireServerVersion("2.2.1")) {
-			LTTextRenderer.showServerSideRequiredMessage(event.getGuiGraphics(), "2.2.1");
+			HudTextRenderer.showServerSideRequiredMessage(event.getGuiGraphics(), "2.2.1");
 			return;
 		}
 		if (this.pressTime==1 || this.pressTime > LotTweaks.CONFIG.REPLACE_INTERVAL) {
@@ -114,7 +109,7 @@ public class ReplaceKey extends LTKeyBase implements RenderHotbarListener, DrawB
 		BlockState newBlockState = block.getStateForPlacement(new BlockPlaceContext(mc.player, InteractionHand.MAIN_HAND, itemStack, (BlockHitResult)target));
 		LTPacketHandlerClient.sendReplaceMessage(pos, newBlockState, state);
 		// add to history
-		ExPickKey.addToHistory(state.getCloneItemStack(mc.level, pos, true));
+		SmartPickKey.addToHistory(state.getCloneItemStack(mc.level, pos, true));
 	}
 
 }

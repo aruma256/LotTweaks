@@ -3,7 +3,9 @@ package com.github.aruma256.lottweaks;
 import java.util.StringJoiner;
 
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.RotationHelper.Group;
+import com.github.aruma256.lottweaks.palette.ItemPalette;
+import com.github.aruma256.lottweaks.palette.PaletteConfigManager;
+import com.github.aruma256.lottweaks.palette.PaletteGroup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -41,9 +43,9 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 		LiteralArgumentBuilder<FabricClientCommandSource> builder = literal(LotTweaks.MODID)
 			.then(literal("add")
 				.then(literal("1")
-					.executes(context -> {executeAdd(Group.PRIMARY); return Command.SINGLE_SUCCESS;}))
+					.executes(context -> {executeAdd(PaletteGroup.PRIMARY); return Command.SINGLE_SUCCESS;}))
 				.then(literal("2")
-					.executes(context -> {executeAdd(Group.SECONDARY); return Command.SINGLE_SUCCESS;}))
+					.executes(context -> {executeAdd(PaletteGroup.SECONDARY); return Command.SINGLE_SUCCESS;}))
 				)
 			.then(literal("reload")
 				.executes(context -> {executeReload(); return Command.SINGLE_SUCCESS;})
@@ -56,7 +58,7 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 		return ClientCommandManager.literal(string);
 	}
 
-	private void executeAdd(Group group) throws LotTweaksCommandRuntimeException {
+	private void executeAdd(PaletteGroup group) throws LotTweaksCommandRuntimeException {
 		Minecraft mc = Minecraft.getInstance();
 		StringJoiner stringJoiner = new StringJoiner(",");
 		int count = 0;
@@ -70,7 +72,7 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 				throw new LotTweaksCommandRuntimeException(String.format("Failed to get item instance. (%d)", i + 1));
 			}
 			String name = BuiltInRegistries.ITEM.getKey(item).toString();
-			if (RotationHelper.canRotate(itemStack, group)) {
+			if (ItemPalette.canCycle(itemStack, group)) {
 				throw new LotTweaksCommandRuntimeException(String.format("'%s' already exists (slot %d)", name, i + 1));
 			}
 			stringJoiner.add(name);
@@ -82,7 +84,7 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 		}
 		LotTweaks.LOGGER.debug("adding a new block/item-group from /lottweaks command");
 		LotTweaks.LOGGER.debug(line);
-		boolean succeeded = RotationHelper.tryToAddItemGroupFromCommand(line, group);
+		boolean succeeded = PaletteConfigManager.tryToAddItemGroup(line, group);
 		if (succeeded) {
 			displayMessage(Component.literal(String.format("LotTweaks: added %d blocks/items", count)));
 		} else {
@@ -92,11 +94,8 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 
 	private void executeReload() throws LotTweaksCommandRuntimeException {
 		try {
-			boolean f;
-			f = RotationHelper.loadAllFromFile();
+			boolean f = PaletteConfigManager.loadAllFromFile();
 			if (!f) throw new LotTweaksCommandRuntimeException("LotTweaks: failed to reload config file");
-			f = RotationHelper.loadAllItemGroupFromStrArray();
-			if (!f) throw new LotTweaksCommandRuntimeException("LotTweaks: failed to reload blocks");
 			displayMessage(Component.literal("LotTweaks: reload succeeded!"));
 		} catch (LotTweaksCommandRuntimeException e) {
 			displayMessage(Component.literal(ChatFormatting.RED + e.getMessage()));
@@ -104,9 +103,11 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 		LotTweaksClient.showErrorLogToChat();
 	}
 
+	// TODO: 例外を使わずにエラーハンドリングを行う設計に変更する
+	@SuppressWarnings("serial")
 	private static final class LotTweaksCommandRuntimeException extends RuntimeException {
 		public LotTweaksCommandRuntimeException(String message) {
-	        super(message);
-	    }
+			super(message);
+		}
 	}
 }

@@ -3,18 +3,17 @@ package com.github.aruma256.lottweaks;
 import org.lwjgl.glfw.GLFW;
 
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.event.ClientChatEvent;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent;
-import com.github.aruma256.lottweaks.event.ClientChatEvent.ClientChatEventListener;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.aruma256.lottweaks.event.ScrollEvent.ScrollListener;
-import com.github.aruma256.lottweaks.keys.AdjustRangeKey;
-import com.github.aruma256.lottweaks.keys.ExPickKey;
-import com.github.aruma256.lottweaks.keys.ReplaceKey;
-import com.github.aruma256.lottweaks.keys.RotateKey;
+import com.github.aruma256.lottweaks.keybinding.PaletteKey;
+import com.github.aruma256.lottweaks.keybinding.ReachExtensionKey;
+import com.github.aruma256.lottweaks.keybinding.ReplaceBlockKey;
+import com.github.aruma256.lottweaks.keybinding.SmartPickKey;
+import com.github.aruma256.lottweaks.palette.PaletteConfigManager;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -37,10 +36,10 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 	private static String serverVersion = "0";
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lottweaks", "keys"));
 	private static KeyMapping[] keyMappings = {
-			new ExPickKey(GLFW.GLFW_KEY_V, CATEGORY),
-			new RotateKey(GLFW.GLFW_KEY_R, CATEGORY),
-			new ReplaceKey(GLFW.GLFW_KEY_G, CATEGORY),
-			new AdjustRangeKey(GLFW.GLFW_KEY_U, CATEGORY)
+			new SmartPickKey(GLFW.GLFW_KEY_V, CATEGORY),
+			new PaletteKey(GLFW.GLFW_KEY_R, CATEGORY),
+			new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY),
+			new ReachExtensionKey(GLFW.GLFW_KEY_U, CATEGORY)
 	};
 
 	public LotTweaksClient() {
@@ -48,8 +47,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	@Override
 	public void onInitializeClient() {
-		RotationHelper.loadAllFromFile();
-		RotationHelper.loadAllItemGroupFromStrArray();
+		PaletteConfigManager.loadAllFromFile();
 		//
 		for (KeyMapping key : keyMappings) {
 			registerKey(key);
@@ -65,16 +63,13 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	private static void registerToMyEventBus(Object obj) {
 		if (obj instanceof ClientTickEvents.EndTick) {
-			ClientTickEvents.END_CLIENT_TICK.register((ClientTickEvents.EndTick)obj);			
+			ClientTickEvents.END_CLIENT_TICK.register((ClientTickEvents.EndTick)obj);
 		}
 		if (obj instanceof RenderHotbarListener) {
 			RenderHotbarEvent.registerListener((RenderHotbarListener)obj);
 		}
 		if (obj instanceof ScrollListener) {
 			ScrollEvent.registerListener((ScrollListener)obj);
-		}
-		if (obj instanceof ClientChatEventListener) {
-			ClientChatEvent.registerListener((ClientChatEventListener)obj);
 		}
 		if (obj instanceof DrawBlockOutlineListener) {
 			DrawBlockOutlineEvent.registerListener((DrawBlockOutlineListener)obj);
@@ -105,7 +100,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 	public static void showErrorLogToChat() {
 		if (LotTweaks.CONFIG.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT) {
 			Minecraft mc = Minecraft.getInstance();
-			for (String line : RotationHelper.LOG_GROUP_CONFIG) {
+			for (String line : PaletteConfigManager.LOG_CONFIG_WARNINGS) {
 				mc.getChatListener().handleSystemMessage(Component.literal(String.format("LotTweaks: %s%s", ChatFormatting.RED, line)), false);
 			}
 		}
@@ -119,7 +114,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 	@Override
 	public void onPlayReady(ClientPacketListener handler, PacketSender sender, Minecraft client) {
 		showErrorLogToChat();
-		AdjustRangeKey.resetRange();
+		ReachExtensionKey.resetRange();
 	}
 
 }

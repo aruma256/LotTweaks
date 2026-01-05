@@ -1,4 +1,4 @@
-package com.github.aruma256.lottweaks.renderer;
+package com.github.aruma256.lottweaks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,9 +14,20 @@ import net.minecraft.world.phys.Vec3;
 
 public class SelectionBoxRenderer {
 
-	private static final double growFactor = 0.0020000000949949026D / 2;
-	private static final VoxelShape CUBE = Shapes.box(-growFactor, -growFactor, -growFactor, 1+growFactor, 1+growFactor, 1+growFactor);
-	
+	// Outline expansion to prevent z-fighting with block faces
+	private static final double OUTLINE_GROW_FACTOR = 0.0020000000949949026D / 2;
+
+	// Selection box outline color (red)
+	private static final float OUTLINE_RED = 1.0F;
+	private static final float OUTLINE_GREEN = 0.0F;
+	private static final float OUTLINE_BLUE = 0.0F;
+	private static final float OUTLINE_ALPHA = 0.4F;
+
+	private static final VoxelShape CUBE = Shapes.box(
+		-OUTLINE_GROW_FACTOR, -OUTLINE_GROW_FACTOR, -OUTLINE_GROW_FACTOR,
+		1 + OUTLINE_GROW_FACTOR, 1 + OUTLINE_GROW_FACTOR, 1 + OUTLINE_GROW_FACTOR
+	);
+
 	public static boolean render(Camera activeRenderInfo, PoseStack matrixStack, VertexConsumer buffer, BlockPos blockPos, float partialTicks, float r, float g, float b) {
 		if (!Minecraft.getInstance().level.getWorldBorder().isWithinBounds(blockPos)) {
 			return false;
@@ -32,13 +43,13 @@ public class SelectionBoxRenderer {
 		return true;
 	}
 
-	//from WorldRenderer.class
+	// from WorldRenderer.class
 	private static void renderHitOutline(PoseStack matrixStackIn, VertexConsumer bufferIn, Entity entity, double xIn, double yIn, double zIn, BlockPos blockPosIn) {
 		float lineWidth = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
-		renderShape(matrixStackIn, bufferIn, CUBE, (double)blockPosIn.getX() - xIn, (double)blockPosIn.getY() - yIn, (double)blockPosIn.getZ() - zIn, 1.0F, 0.0F, 0.0F, 0.4F, lineWidth);
+		renderShape(matrixStackIn, bufferIn, CUBE, (double)blockPosIn.getX() - xIn, (double)blockPosIn.getY() - yIn, (double)blockPosIn.getZ() - zIn, OUTLINE_RED, OUTLINE_GREEN, OUTLINE_BLUE, OUTLINE_ALPHA, lineWidth);
 	}
 
-	//from LevelRenderer.class
+	// from LevelRenderer.class
 	private static void renderShape(PoseStack matrixStackIn, VertexConsumer bufferIn, VoxelShape shapeIn, double xIn, double yIn, double zIn, float red, float green, float blue, float alpha, float lineWidth) {
 		PoseStack.Pose pose = matrixStackIn.last();
 		shapeIn.forAllEdges((ax, ay, az, bx, by, bz) -> {

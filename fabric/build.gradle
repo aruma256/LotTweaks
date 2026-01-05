@@ -55,6 +55,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
+	it.options.compilerArgs += ['-Xlint:all']
 }
 
 java {
@@ -71,7 +72,7 @@ test {
 	useJUnitPlatform()
 	testLogging {
 		events "passed", "skipped", "failed"
-		exceptionFormat "full"
+		exceptionFormat = "full"
 		showStandardStreams = true
 	}
 }
