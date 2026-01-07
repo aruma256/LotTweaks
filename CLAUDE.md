@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 LotTweaks is a Minecraft mod that adds productivity tweaks for builders in Creative mode. The repository contains two implementations:
-- `fabric/` - Fabric mod loader (Minecraft 1.21.8, mod version 2.3.6) **← 現在の主な作業対象**
+- `fabric/` - Fabric mod loader (Minecraft 1.21.8) **← 現在の主な作業対象**
 - `forge/` - Forge mod loader (Minecraft 1.21, mod version 2.2.5)
 
 ## Development Environment
@@ -52,15 +52,15 @@ CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
 ### Fabric Source Structure (split environment)
 - `src/main/` - Server-side code (package: `com.github.aruma256.lottweaks`)
   - `LotTweaks.java` - Main entry point (`ModInitializer`), config constants
-  - `network/` - Packet handling, connection listeners
+  - `network/` - Packet handling (`ModNetwork.java`), connection listeners
 - `src/client/` - Client-side code
   - `LotTweaksClient.java` - Client entry point (`ClientModInitializer`), keybinding registration
-  - `keys/` - Keybinding classes (V=ExPick, R=Rotate, G=Replace, U=AdjustRange)
-  - `event/` - Custom event system (scroll, hotbar render, chat, block outline)
+  - `keybinding/` - Keybinding classes (V=SmartPick, R=Palette, G=ReplaceBlock, U=ReachExtension)
+  - `palette/` - Block group cycling system (ItemPalette, PaletteConfigManager, ItemGroupParser)
+  - `event/` - Custom event system (scroll, hotbar render, block outline)
   - `mixin/client/` - Mixins for hooking into Minecraft client
-  - `renderer/` - Rendering utilities
-  - `RotationHelper.java` - Block group rotation system (~425 lines, core feature)
-- `src/test/` - JUnit tests
+  - `render/` - Rendering utilities (ItemStackRenderer, HudTextRenderer, SelectionBoxRenderer)
+- `src/test/` - JUnit tests (30 tests)
 
 ### Forge Source Structure
 - `src/main/java/com/github/lotqwerty/lottweaks/` - All code in single source set
@@ -76,9 +76,10 @@ CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
 | Mixins | Separate client mixins | Not used |
 
 ### Core Features Implementation
-- **Block Group Rotation** (`RotationHelper.java`): Manages chains of related blocks (e.g., stone variants) that users can cycle through. Config files: `LotTweaks-BlockGroups.txt`, `LotTweaks-BlockGroups2.txt`
+- **Block Palette** (`palette/`): Manages chains of related blocks (e.g., stone variants) that users can cycle through. Config files: `LotTweaks-BlockGroups.txt`, `LotTweaks-BlockGroups2.txt`
 - **Extended Reach** (`AdjustRangeHelper.java`): Server-side reach distance modification
-- **Keybinding System** (`keys/LTKeyBase.java`): Base class with press/release/double-tap detection
+- **Keybinding System** (`keybinding/KeyBase.java`): Base class with press/release/double-tap detection
+- **Network** (`ModNetwork.java`, `ModNetworkClient.java`): Packet handling for ReplaceBlock, ReachExtension, Handshake
 
 ### Mixin Targets (Fabric client)
 - `MouseScrollRedirector` - Intercept scroll for item cycling
