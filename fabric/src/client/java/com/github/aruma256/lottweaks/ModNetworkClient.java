@@ -8,22 +8,18 @@ import net.minecraft.world.level.block.state.BlockState;
 public class ModNetworkClient extends ModNetwork {
 
 	protected static void initClient() {
-		ClientPlayNetworking.registerGlobalReceiver(HelloMessage.TYPE, (payload, context) -> { HelloMessageHandler.handle(payload.version()); });
+		ClientPlayNetworking.registerGlobalReceiver(HandshakePacket.TYPE, (payload, context) -> { HandshakeHandler.handle(payload.version()); });
 	}
 
-	public static void sendReplaceMessage(BlockPos pos, BlockState state, BlockState checkState) {
-		// FriendlyByteBuf buf = PacketByteBufs.create();
-		// new ReplaceMessage(pos, state, checkState).toBytes(buf);
-		ClientPlayNetworking.send(new ReplaceMessage(pos, state, checkState));
+	public static void sendReplaceBlockPacket(BlockPos pos, BlockState state, BlockState checkState) {
+		ClientPlayNetworking.send(new ReplaceBlockPacket(pos, state, checkState));
 	}
 
-	public static void sendReachRangeMessage(double dist) {
-		// FriendlyByteBuf buf = PacketByteBufs.create();
-		// new AdjustRangeMessage(dist).toBytes(buf);
-		ClientPlayNetworking.send(new AdjustRangeMessage(dist));
+	public static void sendReachExtensionPacket(double dist) {
+		ClientPlayNetworking.send(new ReachExtensionPacket(dist));
 	}
 
-	public static class HelloMessageHandler {
+	public static class HandshakeHandler {
 		public static void handle(String version) {
 			LotTweaksClient.setServerVersion(version);
 		}

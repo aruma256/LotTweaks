@@ -46,7 +46,7 @@ public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 		} else {
 			dist = Math.min(LotTweaks.CONFIG.MAX_RANGE, mc.player.getEyePosition(event.getPartialTicks()).distanceTo(rayTraceResult.getLocation()));
 		}
-		ModNetworkClient.sendReachRangeMessage(dist);
+		ModNetworkClient.sendReachExtensionPacket(dist);
 		reachDistance = (float) dist;
 		// Render
 		int distInt = (int)dist;

@@ -255,8 +255,20 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 
 残存していた「LT」プレフィックスを除去し、より明確な命名に変更。
 
-- `LTPacketHandler` → `ModNetwork`
-- `LTPacketHandlerClient` → `ModNetworkClient`
+1. クラス名変更:
+   - `LTPacketHandler` → `ModNetwork`
+   - `LTPacketHandlerClient` → `ModNetworkClient`
+
+2. パケットクラス名変更（後方互換性維持: Identifier は変更なし）:
+   - `ReplaceMessage` → `ReplaceBlockPacket`
+   - `AdjustRangeMessage` → `ReachExtensionPacket`
+   - `HelloMessage` → `HandshakePacket`
+
+3. メソッド名変更:
+   - `sendReplaceMessage()` → `sendReplaceBlockPacket()`
+   - `sendReachRangeMessage()` → `sendReachExtensionPacket()`
+   - `sendHelloMessage()` → `sendHandshakePacket()`
+   - `HelloMessageHandler` → `HandshakeHandler`
 
 ## 進捗トラッキング
 

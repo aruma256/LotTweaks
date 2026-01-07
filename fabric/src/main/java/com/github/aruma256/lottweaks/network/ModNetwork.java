@@ -24,34 +24,34 @@ import net.minecraft.world.phys.Vec3;
 public class ModNetwork {
 
 	public static void init() {
-		PayloadTypeRegistry.playC2S().register(ReplaceMessage.TYPE, ReplaceMessage.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(ReplaceMessage.TYPE, (payload, context) -> { payload.handle(context); });
-		PayloadTypeRegistry.playC2S().register(AdjustRangeMessage.TYPE, AdjustRangeMessage.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(AdjustRangeMessage.TYPE, (payload, context) -> { payload.handle(context); });
-		PayloadTypeRegistry.playS2C().register(HelloMessage.TYPE, HelloMessage.CODEC);
+		PayloadTypeRegistry.playC2S().register(ReplaceBlockPacket.TYPE, ReplaceBlockPacket.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ReplaceBlockPacket.TYPE, (payload, context) -> { payload.handle(context); });
+		PayloadTypeRegistry.playC2S().register(ReachExtensionPacket.TYPE, ReachExtensionPacket.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ReachExtensionPacket.TYPE, (payload, context) -> { payload.handle(context); });
+		PayloadTypeRegistry.playS2C().register(HandshakePacket.TYPE, HandshakePacket.CODEC);
 	}
 
-	public static void sendHelloMessage(ServerPlayer player) {
+	public static void sendHandshakePacket(ServerPlayer player) {
 		FriendlyByteBuf buf = PacketByteBufs.create();
-		new HelloMessage(LotTweaks.VERSION).toBytes(buf);
-		ServerPlayNetworking.send(player, new HelloMessage(LotTweaks.VERSION));
+		new HandshakePacket(LotTweaks.VERSION).toBytes(buf);
+		ServerPlayNetworking.send(player, new HandshakePacket(LotTweaks.VERSION));
 	}
 
-	//Replace
+	// ReplaceBlock
 
-	public record ReplaceMessage(BlockPos pos, BlockState state, BlockState checkState) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<ReplaceMessage> TYPE = new CustomPacketPayload.Type<ReplaceMessage>(Identifier.fromNamespaceAndPath("lottweaks", "replace"));
-		public static final StreamCodec<FriendlyByteBuf, ReplaceMessage> CODEC = StreamCodec.of(
+	public record ReplaceBlockPacket(BlockPos pos, BlockState state, BlockState checkState) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ReplaceBlockPacket> TYPE = new CustomPacketPayload.Type<ReplaceBlockPacket>(Identifier.fromNamespaceAndPath("lottweaks", "replace"));
+		public static final StreamCodec<FriendlyByteBuf, ReplaceBlockPacket> CODEC = StreamCodec.of(
 			(buf, packet) -> packet.toBytes(buf),
-			buf -> new ReplaceMessage(buf)
+			buf -> new ReplaceBlockPacket(buf)
 		);
 
 		@Override
-		public Type<ReplaceMessage> type() {
+		public Type<ReplaceBlockPacket> type() {
 			return TYPE;
 		}
 
-		public ReplaceMessage(FriendlyByteBuf buf) {
+		public ReplaceBlockPacket(FriendlyByteBuf buf) {
 			this(buf.readBlockPos(), Block.stateById(buf.readInt()), Block.stateById(buf.readInt()));
 		}
 
@@ -98,25 +98,25 @@ public class ModNetwork {
 	}
 
 
-	// AdjustRange
+	// ReachExtension
 
-	public record AdjustRangeMessage(double dist) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<AdjustRangeMessage> TYPE = new CustomPacketPayload.Type<AdjustRangeMessage>(Identifier.fromNamespaceAndPath("lottweaks", "adjust_range"));
-		public static final StreamCodec<FriendlyByteBuf, AdjustRangeMessage> CODEC = StreamCodec.of(
+	public record ReachExtensionPacket(double dist) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<ReachExtensionPacket> TYPE = new CustomPacketPayload.Type<ReachExtensionPacket>(Identifier.fromNamespaceAndPath("lottweaks", "adjust_range"));
+		public static final StreamCodec<FriendlyByteBuf, ReachExtensionPacket> CODEC = StreamCodec.of(
 			(buf, packet) -> packet.toBytes(buf),
-			buf -> new AdjustRangeMessage(buf)
+			buf -> new ReachExtensionPacket(buf)
 		);
 
 		@Override
-		public Type<AdjustRangeMessage> type() {
+		public Type<ReachExtensionPacket> type() {
 			return TYPE;
 		}
 
-		public AdjustRangeMessage(double dist) {
+		public ReachExtensionPacket(double dist) {
 			this.dist = dist;
 		}
 
-		public AdjustRangeMessage(FriendlyByteBuf buf) {
+		public ReachExtensionPacket(FriendlyByteBuf buf) {
 			this(buf.readDouble());
 		}
 
@@ -144,25 +144,25 @@ public class ModNetwork {
 		}
 	}
 
-	// Hello
+	// Handshake
 
-	public record HelloMessage(String version) implements CustomPacketPayload {
-		public static final CustomPacketPayload.Type<HelloMessage> TYPE = new CustomPacketPayload.Type<HelloMessage>(Identifier.fromNamespaceAndPath("lottweaks", "hello"));
-		public static final StreamCodec<FriendlyByteBuf, HelloMessage> CODEC = StreamCodec.of(
+	public record HandshakePacket(String version) implements CustomPacketPayload {
+		public static final CustomPacketPayload.Type<HandshakePacket> TYPE = new CustomPacketPayload.Type<HandshakePacket>(Identifier.fromNamespaceAndPath("lottweaks", "hello"));
+		public static final StreamCodec<FriendlyByteBuf, HandshakePacket> CODEC = StreamCodec.of(
 			(buf, packet) -> packet.toBytes(buf),
-			buf -> new HelloMessage(buf)
+			buf -> new HandshakePacket(buf)
 		);
 
 		@Override
-		public Type<HelloMessage> type() {
+		public Type<HandshakePacket> type() {
 			return TYPE;
 		}
 
-		public HelloMessage(String version) {
+		public HandshakePacket(String version) {
 			this.version = version;
 		}
 
-		public HelloMessage(FriendlyByteBuf buf) {
+		public HandshakePacket(FriendlyByteBuf buf) {
 			this(buf.readCharSequence(buf.readInt(), StandardCharsets.UTF_8).toString());
 		}
 

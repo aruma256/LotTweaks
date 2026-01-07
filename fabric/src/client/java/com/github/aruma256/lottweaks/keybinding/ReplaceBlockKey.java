@@ -107,7 +107,7 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, Dr
 			return;
 		}
 		BlockState newBlockState = block.getStateForPlacement(new BlockPlaceContext(mc.player, InteractionHand.MAIN_HAND, itemStack, (BlockHitResult)target));
-		ModNetworkClient.sendReplaceMessage(pos, newBlockState, state);
+		ModNetworkClient.sendReplaceBlockPacket(pos, newBlockState, state);
 		// add to history
 		SmartPickKey.addToHistory(state.getCloneItemStack(mc.level, pos, true));
 	}

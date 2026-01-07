@@ -9,7 +9,7 @@ public class ServerConnectionListener implements ServerPlayConnectionEvents.Join
 
 	@Override
 	public void onPlayReady(ServerGamePacketListenerImpl handler, PacketSender sender, MinecraftServer server) {
-		ModNetwork.sendHelloMessage(handler.player);
+		ModNetwork.sendHandshakePacket(handler.player);
 	}
 
 }
