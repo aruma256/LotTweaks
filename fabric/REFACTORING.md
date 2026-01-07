@@ -53,7 +53,7 @@
 com.github.aruma256.lottweaks/
 ├── LotTweaks.java                    # エントリーポイント + CONFIG（設定外部化は別途対応）
 ├── network/
-│   ├── LTPacketHandler.java          # 現状維持（構造は適切）
+│   ├── ModNetwork.java               # LTPacketHandler から改名
 │   └── ServerConnectionListener.java
 └── reach/
     └── ReachDistanceManager.java     # AdjustRangeHelper から改名（BLOCK_INTERACTION_RANGEのModifierを管理）
@@ -85,7 +85,7 @@ com.github.aruma256.lottweaks/
 ├── command/
 │   └── LotTweaksCommand.java
 └── network/
-    └── ClientPacketSender.java       # LTPacketHandlerClient から改名
+    └── ModNetworkClient.java         # LTPacketHandlerClient から改名
 ```
 
 
@@ -248,6 +248,15 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 - クリーンなコードベース
 - すべてのテストがパス
 
+---
+
+### Step 6: ネットワーククラスのリネーム
+**状態: ✅ 完了**
+
+残存していた「LT」プレフィックスを除去し、より明確な命名に変更。
+
+- `LTPacketHandler` → `ModNetwork`
+- `LTPacketHandlerClient` → `ModNetworkClient`
 
 ## 進捗トラッキング
 
@@ -259,6 +268,7 @@ run/config/LotTweaks-BlockGroups2.txt → src/client/resources/assets/lottweaks/
 | 3 | レンダラーのリネーム | ✅ 完了 | 2026-01-04 |
 | 4 | パケットハンドラーの整理（オプション） | ⏭️ スキップ | - |
 | 5 | 最終レビュー | ✅ 完了 | 2026-01-05 |
+| 6 | ネットワーククラスのリネーム (LT→ModNetwork) | ✅ 完了 | 2026-01-07 |
 
 
 ## 参考情報

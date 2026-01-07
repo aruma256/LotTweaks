@@ -1,7 +1,7 @@
 package com.github.aruma256.lottweaks.keybinding;
 
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.LTPacketHandlerClient;
+import com.github.aruma256.lottweaks.ModNetworkClient;
 import com.github.aruma256.lottweaks.LotTweaksClient;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
@@ -46,7 +46,7 @@ public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 		} else {
 			dist = Math.min(LotTweaks.CONFIG.MAX_RANGE, mc.player.getEyePosition(event.getPartialTicks()).distanceTo(rayTraceResult.getLocation()));
 		}
-		LTPacketHandlerClient.sendReachRangeMessage(dist);
+		ModNetworkClient.sendReachRangeMessage(dist);
 		reachDistance = (float) dist;
 		// Render
 		int distInt = (int)dist;

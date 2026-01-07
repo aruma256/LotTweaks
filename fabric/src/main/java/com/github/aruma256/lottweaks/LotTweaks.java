@@ -3,7 +3,7 @@ package com.github.aruma256.lottweaks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.aruma256.lottweaks.network.LTPacketHandler;
+import com.github.aruma256.lottweaks.network.ModNetwork;
 import com.github.aruma256.lottweaks.network.ServerConnectionListener;
 
 import net.fabricmc.api.ModInitializer;
@@ -30,7 +30,7 @@ public class LotTweaks implements ModInitializer {
 	
 	@Override
 	public void onInitialize() {
-		LTPacketHandler.init();
+		ModNetwork.init();
 		ServerTickEvents.START_SERVER_TICK.register(new AdjustRangeHelper());
 		ServerPlayConnectionEvents.JOIN.register(new ServerConnectionListener());
 	}

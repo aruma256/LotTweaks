@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 
 //https://mcforge.readthedocs.io/en/1.16.x/networking/simpleimpl/
 
-public class LTPacketHandler {
+public class ModNetwork {
 
 	public static void init() {
 		PayloadTypeRegistry.playC2S().register(ReplaceMessage.TYPE, ReplaceMessage.CODEC);

@@ -1,7 +1,7 @@
 package com.github.aruma256.lottweaks.keybinding;
 
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.LTPacketHandlerClient;
+import com.github.aruma256.lottweaks.ModNetworkClient;
 import com.github.aruma256.lottweaks.LotTweaksClient;
 import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
@@ -107,7 +107,7 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, Dr
 			return;
 		}
 		BlockState newBlockState = block.getStateForPlacement(new BlockPlaceContext(mc.player, InteractionHand.MAIN_HAND, itemStack, (BlockHitResult)target));
-		LTPacketHandlerClient.sendReplaceMessage(pos, newBlockState, state);
+		ModNetworkClient.sendReplaceMessage(pos, newBlockState, state);
 		// add to history
 		SmartPickKey.addToHistory(state.getCloneItemStack(mc.level, pos, true));
 	}

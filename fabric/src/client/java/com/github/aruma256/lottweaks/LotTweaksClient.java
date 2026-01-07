@@ -57,7 +57,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 		//
 		ClientCommandRegistrationCallback.EVENT.register(new LotTweaksCommand());
 		//
-		LTPacketHandlerClient.initClient();
+		ModNetworkClient.initClient();
 	}
 
 	private static void registerToMyEventBus(Object obj) {

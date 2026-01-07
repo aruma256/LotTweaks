@@ -1,11 +1,11 @@
 package com.github.aruma256.lottweaks;
 
-import com.github.aruma256.lottweaks.network.LTPacketHandler;
+import com.github.aruma256.lottweaks.network.ModNetwork;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class LTPacketHandlerClient extends LTPacketHandler {
+public class ModNetworkClient extends ModNetwork {
 
 	protected static void initClient() {
 		ClientPlayNetworking.registerGlobalReceiver(HelloMessage.TYPE, (payload, context) -> { HelloMessageHandler.handle(payload.version()); });
