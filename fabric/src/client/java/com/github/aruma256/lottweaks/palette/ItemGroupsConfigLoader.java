@@ -17,7 +17,6 @@ import java.util.Set;
 
 import com.github.aruma256.lottweaks.LotTweaks;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -198,29 +197,47 @@ public class ItemGroupsConfigLoader {
         }
 
         File file = new File(configDir, CONFIG_FILE_NAME);
-        JsonObject root = new JsonObject();
-        root.addProperty("mc_version", MC_VERSION);
-        root.addProperty("config_version", CURRENT_CONFIG_VERSION);
-
-        JsonArray groupsArray = new JsonArray();
-        for (List<List<ItemState>> cyclesInGroup : groups) {
-            JsonArray cyclesArray = new JsonArray();
-            for (List<ItemState> itemsInCycle : cyclesInGroup) {
-                JsonArray itemsArray = new JsonArray();
-                for (ItemState itemState : itemsInCycle) {
-                    JsonObject itemObj = serializeItemState(itemState);
-                    itemsArray.add(itemObj);
-                }
-                cyclesArray.add(itemsArray);
-            }
-            groupsArray.add(cyclesArray);
-        }
-        root.add("groups", groupsArray);
+        Gson compactGson = new Gson();
 
         try (BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            writer.write(gson.toJson(root));
+
+            writer.write("{\n");
+            writer.write("  \"mc_version\": \"" + MC_VERSION + "\",\n");
+            writer.write("  \"config_version\": " + CURRENT_CONFIG_VERSION + ",\n");
+            writer.write("  \"groups\": [\n");
+
+            for (int groupIdx = 0; groupIdx < groups.size(); groupIdx++) {
+                List<List<ItemState>> cyclesInGroup = groups.get(groupIdx);
+                writer.write("    [\n");
+
+                for (int cycleIdx = 0; cycleIdx < cyclesInGroup.size(); cycleIdx++) {
+                    List<ItemState> itemsInCycle = cyclesInGroup.get(cycleIdx);
+
+                    // Build cycle array inline (single line)
+                    JsonArray itemsArray = new JsonArray();
+                    for (ItemState itemState : itemsInCycle) {
+                        itemsArray.add(serializeItemState(itemState));
+                    }
+                    String cycleJson = compactGson.toJson(itemsArray);
+
+                    writer.write("      " + cycleJson);
+                    if (cycleIdx < cyclesInGroup.size() - 1) {
+                        writer.write(",");
+                    }
+                    writer.write("\n");
+                }
+
+                writer.write("    ]");
+                if (groupIdx < groups.size() - 1) {
+                    writer.write(",");
+                }
+                writer.write("\n");
+            }
+
+            writer.write("  ]\n");
+            writer.write("}\n");
+
         } catch (IOException e) {
             LotTweaks.LOGGER.error("Failed to save config file", e);
         }
