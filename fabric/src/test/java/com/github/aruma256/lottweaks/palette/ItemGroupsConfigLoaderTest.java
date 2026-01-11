@@ -159,6 +159,55 @@ public class ItemGroupsConfigLoaderTest {
     }
 
     @Test
+    public void testLoad_warnsOnDuplicateItemAcrossCyclesInSameGroup() throws IOException {
+        // Same item (stone) appears in two different cycles within the same group
+        String json = """
+            {
+              "config_version": 1,
+              "groups": [
+                [
+                  [{"id": "minecraft:stone"}, {"id": "minecraft:granite"}],
+                  [{"id": "minecraft:stone"}, {"id": "minecraft:diorite"}]
+                ]
+              ]
+            }
+            """;
+        writeConfigFile(json);
+
+        ItemGroupsConfigLoader.LoadResult result = ItemGroupsConfigLoader.load(tempDir);
+
+        assertFalse(result.getWarnings().isEmpty());
+        assertTrue(result.getWarnings().stream().anyMatch(w -> w.contains("stone") && w.contains("duplicated")));
+    }
+
+    @Test
+    public void testLoad_allowsSameItemInDifferentGroups() throws IOException {
+        // Same item (stone) appears in different groups - this should be allowed
+        String json = """
+            {
+              "config_version": 1,
+              "groups": [
+                [
+                  [{"id": "minecraft:stone"}, {"id": "minecraft:granite"}]
+                ],
+                [
+                  [{"id": "minecraft:stone"}, {"id": "minecraft:diorite"}]
+                ]
+              ]
+            }
+            """;
+        writeConfigFile(json);
+
+        ItemGroupsConfigLoader.LoadResult result = ItemGroupsConfigLoader.load(tempDir);
+
+        assertTrue(result.getWarnings().isEmpty(), "Should allow same item in different groups. Warnings: " + result.getWarnings());
+        assertEquals(2, result.getGroups().size());
+        // Both groups should have their cycles intact
+        assertEquals(1, result.getGroups().get(0).size());
+        assertEquals(1, result.getGroups().get(1).size());
+    }
+
+    @Test
     public void testLoad_warnsOnCycleWithLessThan2Items() throws IOException {
         String json = """
             {

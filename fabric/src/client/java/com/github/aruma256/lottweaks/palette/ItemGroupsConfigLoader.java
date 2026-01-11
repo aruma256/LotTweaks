@@ -92,12 +92,12 @@ public class ItemGroupsConfigLoader {
             }
 
             JsonArray groupsArray = root.getAsJsonArray("groups");
-            Set<ItemState> globalRegistered = new HashSet<>();
             int groupIndex = 0;
 
             for (JsonElement groupElement : groupsArray) {
                 List<List<ItemState>> cyclesInGroup = new ArrayList<>();
                 JsonArray cyclesArray = groupElement.getAsJsonArray();
+                Set<ItemState> groupRegistered = new HashSet<>();
                 int cycleIndex = 0;
 
                 for (JsonElement cycleElement : cyclesArray) {
@@ -114,7 +114,7 @@ public class ItemGroupsConfigLoader {
                             continue;
                         }
 
-                        if (globalRegistered.contains(itemState) || cycleRegistered.contains(itemState)) {
+                        if (groupRegistered.contains(itemState) || cycleRegistered.contains(itemState)) {
                             warnings.add(String.format("'%s' is duplicated. (%s)",
                                     itemObj.get("id").getAsString(), location));
                             continue;
@@ -126,7 +126,7 @@ public class ItemGroupsConfigLoader {
 
                     if (itemsInCycle.size() >= 2) {
                         cyclesInGroup.add(itemsInCycle);
-                        globalRegistered.addAll(itemsInCycle);
+                        groupRegistered.addAll(itemsInCycle);
                     } else if (!itemsArray.isEmpty()) {
                         warnings.add(String.format("Cycle has less than 2 valid items. (group[%d].cycle[%d])",
                                 groupIndex, cycleIndex));
