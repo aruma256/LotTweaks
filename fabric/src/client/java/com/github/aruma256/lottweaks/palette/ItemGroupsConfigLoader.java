@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
@@ -39,6 +40,20 @@ import net.minecraft.world.item.Items;
 public class ItemGroupsConfigLoader {
 
     public static final String CONFIG_FILE_NAME = "LotTweaks-ItemGroups.json";
+
+    /**
+     * Get the appropriate RegistryAccess for codec operations.
+     * Uses the client's level registry (includes data-driven registries like enchantments)
+     * when in a world, otherwise falls back to built-in registries.
+     */
+    private static RegistryAccess getRegistryAccess() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level != null) {
+            return mc.level.registryAccess();
+        }
+        // Fallback for when not in a world (limited - won't have enchantments etc.)
+        return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+    }
     private static final int CURRENT_CONFIG_VERSION = 1;
 
     public static class LoadResult {
@@ -176,8 +191,9 @@ public class ItemGroupsConfigLoader {
             String componentsStr = itemObj.get("components").getAsString();
             try {
                 CompoundTag nbt = TagParser.parseCompoundFully(componentsStr);
-                RegistryOps<com.google.gson.JsonElement> registryOps = RegistryOps.create(
-                        JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+                // Use client's registry access for data-driven registries (e.g., enchantments)
+                RegistryAccess registryAccess = getRegistryAccess();
+                RegistryOps<com.google.gson.JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
                 com.google.gson.JsonElement json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt);
                 DataComponentPatch patch = DataComponentPatch.CODEC.parse(registryOps, json).getOrThrow();
                 itemStack.applyComponents(patch);
@@ -251,8 +267,8 @@ public class ItemGroupsConfigLoader {
         if (itemState.hasComponents()) {
             try {
                 DataComponentPatch patch = stack.getComponentsPatch();
-                RegistryOps<com.google.gson.JsonElement> registryOps = RegistryOps.create(
-                        JsonOps.INSTANCE, RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY));
+                // Use client's registry access to include data-driven registries (e.g., enchantments)
+                RegistryOps<com.google.gson.JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, getRegistryAccess());
                 com.google.gson.JsonElement encoded = DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
 
                 // Convert JSON to SNBT-like string
