@@ -48,6 +48,24 @@ public class ItemPalette {
         return cache.containsKey(fallbackKey);
     }
 
+    /**
+     * Check if an exact item (with its specific components) is already registered.
+     * Unlike canCycle(), this does NOT use fallback search.
+     * Use this for duplicate detection when adding new items.
+     */
+    public static boolean containsExactItem(ItemStack itemStack, int groupIndex) {
+        if (itemStack == null || itemStack.isEmpty()) {
+            return false;
+        }
+        if (groupIndex < 0 || groupIndex >= GROUP_CACHES.size()) {
+            return false;
+        }
+
+        Map<ItemState, List<ItemState>> cache = GROUP_CACHES.get(groupIndex);
+        ItemState key = new ItemState(itemStack);
+        return cache.containsKey(key);
+    }
+
     public static List<ItemStack> getAllCycleItems(ItemStack itemStack, int groupIndex) {
         if (itemStack == null || itemStack.isEmpty()) {
             return null;

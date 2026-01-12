@@ -174,6 +174,63 @@ public class ItemPaletteTest {
         assertFalse(ItemPalette.canCycle(new ItemStack(Items.STONE), 0));
     }
 
+    // --- Tests for containsExactItem (no fallback) ---
+
+    @Test
+    public void testContainsExactItem_returnsTrueForExactMatch() {
+        List<ItemState> cycle = Arrays.asList(
+                new ItemState(new ItemStack(Items.STONE)),
+                new ItemState(new ItemStack(Items.GRANITE))
+        );
+        loadCycle(0, cycle);
+
+        assertTrue(ItemPalette.containsExactItem(new ItemStack(Items.STONE), 0));
+        assertTrue(ItemPalette.containsExactItem(new ItemStack(Items.GRANITE), 0));
+    }
+
+    @Test
+    public void testContainsExactItem_returnsFalseForItemWithDifferentComponents() {
+        // Register plain stone
+        List<ItemState> cycle = Arrays.asList(
+                new ItemState(new ItemStack(Items.STONE)),
+                new ItemState(new ItemStack(Items.GRANITE))
+        );
+        loadCycle(0, cycle);
+
+        // Named stone should NOT match (no fallback in containsExactItem)
+        ItemStack namedStone = new ItemStack(Items.STONE);
+        namedStone.set(DataComponents.CUSTOM_NAME, Component.literal("Special Stone"));
+
+        assertFalse(ItemPalette.containsExactItem(namedStone, 0));
+        // But canCycle should still return true due to fallback
+        assertTrue(ItemPalette.canCycle(namedStone, 0));
+    }
+
+    @Test
+    public void testContainsExactItem_returnsFalseForUnregisteredItem() {
+        loadSimpleCycle(0);
+        assertFalse(ItemPalette.containsExactItem(new ItemStack(Items.DIORITE), 0));
+    }
+
+    @Test
+    public void testContainsExactItem_allowsSameItemWithDifferentComponentsInSeparateCycles() {
+        // This tests the use case: plain bow registered, want to add enchanted bow
+        ItemStack namedStone = new ItemStack(Items.STONE);
+        namedStone.set(DataComponents.CUSTOM_NAME, Component.literal("Named Stone"));
+
+        // Plain stone is registered
+        List<ItemState> plainCycle = Arrays.asList(
+                new ItemState(new ItemStack(Items.STONE)),
+                new ItemState(new ItemStack(Items.GRANITE))
+        );
+        loadCycle(0, plainCycle);
+
+        // containsExactItem should return false for named stone (allowing it to be added)
+        assertFalse(ItemPalette.containsExactItem(namedStone, 0));
+        // canCycle returns true due to fallback (for runtime cycling)
+        assertTrue(ItemPalette.canCycle(namedStone, 0));
+    }
+
     // --- Tests for two-stage fallback ---
 
     @Test

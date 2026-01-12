@@ -71,7 +71,7 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 			Identifier id = BuiltInRegistries.ITEM.getKey(item);
 			String name = id.toString();
 
-			if (ItemPalette.canCycle(itemStack, groupIndex)) {
+			if (ItemPalette.containsExactItem(itemStack, groupIndex)) {
 				throw new LotTweaksCommandRuntimeException(String.format("'%s' already exists (slot %d)", name, i + 1));
 			}
 
