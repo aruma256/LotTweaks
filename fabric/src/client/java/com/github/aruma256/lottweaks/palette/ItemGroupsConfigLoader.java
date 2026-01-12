@@ -39,7 +39,6 @@ import net.minecraft.world.item.Items;
 public class ItemGroupsConfigLoader {
 
     public static final String CONFIG_FILE_NAME = "LotTweaks-ItemGroups.json";
-    private static final String MC_VERSION = "1.21.x";
     private static final int CURRENT_CONFIG_VERSION = 1;
 
     public static class LoadResult {
@@ -203,7 +202,6 @@ public class ItemGroupsConfigLoader {
                 new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
 
             writer.write("{\n");
-            writer.write("  \"mc_version\": \"" + MC_VERSION + "\",\n");
             writer.write("  \"config_version\": " + CURRENT_CONFIG_VERSION + ",\n");
             writer.write("  \"groups\": [\n");
 

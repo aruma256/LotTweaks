@@ -51,7 +51,6 @@ public class ItemGroupsConfigLoaderTest {
     public void testLoad_parsesValidJson() throws IOException {
         String json = """
             {
-              "mc_version": "1.21.x",
               "config_version": 1,
               "groups": [
                 [
