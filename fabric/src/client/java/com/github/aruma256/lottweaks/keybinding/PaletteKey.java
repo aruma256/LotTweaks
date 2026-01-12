@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.github.aruma256.lottweaks.LotTweaks;
 import com.github.aruma256.lottweaks.palette.ItemPalette;
-import com.github.aruma256.lottweaks.palette.PaletteGroup;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
@@ -27,18 +26,32 @@ public class PaletteKey extends ItemCycleKeyBase implements ScrollListener, Rend
 	}
 
 	private void updatePhase() {
-		if (this.doubleTapTick == 0) {
-			phase = 0;
+		int maxGroups = ItemPalette.getGroupCount();
+		if (maxGroups <= 2) {
+			// Original behavior for 0-2 groups
+			if (this.doubleTapTick == 0) {
+				phase = 0;
+			} else {
+				phase ^= 1;
+			}
 		} else {
-			phase ^= 1;
+			// Cycle through all groups
+			if (this.doubleTapTick == 0) {
+				phase = 0;
+			} else {
+				phase = (phase + 1) % maxGroups;
+			}
 		}
 	}
 
-	private PaletteGroup getGroup() {
+	private int getGroupIndex() {
+		int maxGroups = ItemPalette.getGroupCount();
+		if (maxGroups == 0) return 0;
+
 		if (LotTweaks.CONFIG.SNEAK_TO_SWITCH_GROUP) {
-			return (!Minecraft.getInstance().player.isShiftKeyDown()) ? PaletteGroup.PRIMARY : PaletteGroup.SECONDARY;
+			return Minecraft.getInstance().player.isShiftKeyDown() ? 1 : 0;
 		} else {
-			return this.phase == 0 ? PaletteGroup.PRIMARY : PaletteGroup.SECONDARY;
+			return this.phase % maxGroups;
 		}
 	}
 
@@ -55,7 +68,7 @@ public class PaletteKey extends ItemCycleKeyBase implements ScrollListener, Rend
 		if (itemStack.isEmpty()) {
 			return;
 		}
-		List<ItemStack> results = ItemPalette.getAllCycleItems(itemStack, getGroup());
+		List<ItemStack> results = ItemPalette.getAllCycleItems(itemStack, getGroupIndex());
 		if (results == null || results.size() <= 1) {
 			return;
 		}

@@ -112,6 +112,8 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	@Override
 	public void onPlayReady(ClientPacketListener handler, PacketSender sender, Minecraft client) {
+		// Reload config now that dynamic registries (enchantments, etc.) are available
+		PaletteConfigManager.loadAllFromFile();
 		showErrorLogToChat();
 		ReachExtensionKey.resetRange();
 	}

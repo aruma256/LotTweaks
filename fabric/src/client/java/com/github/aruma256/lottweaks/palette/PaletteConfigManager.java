@@ -1,13 +1,8 @@
 package com.github.aruma256.lottweaks.palette;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,127 +11,125 @@ import com.github.aruma256.lottweaks.LotTweaks;
 
 public class PaletteConfigManager {
 
-    private static final String DEFAULT_RESOURCE_PRIMARY = "/assets/lottweaks/default-block-groups.txt";
-    private static final String DEFAULT_RESOURCE_SECONDARY = "/assets/lottweaks/default-block-groups2.txt";
+    private static final String DEFAULT_JSON_RESOURCE = "/assets/lottweaks/default-item-groups.json";
 
     private static final File CONFIG_DIR = new File("config");
 
     public static final List<String> LOG_CONFIG_WARNINGS = new ArrayList<>();
 
-    private static List<String> linesFromFilePrimary = new ArrayList<>();
-    private static List<String> linesFromFileSecondary = new ArrayList<>();
-
-    private static String getDefaultResourcePath(PaletteGroup group) {
-        return (group == PaletteGroup.PRIMARY) ? DEFAULT_RESOURCE_PRIMARY : DEFAULT_RESOURCE_SECONDARY;
-    }
-
-    private static File getConfigFile(PaletteGroup group) {
-        return new File(CONFIG_DIR, group.getConfigFileName());
-    }
-
-    private static List<String> getLinesFromFile(PaletteGroup group) {
-        return (group == PaletteGroup.PRIMARY) ? linesFromFilePrimary : linesFromFileSecondary;
-    }
-
     public static boolean loadAllFromFile() {
         LOG_CONFIG_WARNINGS.clear();
-        boolean success = true;
-        for (PaletteGroup group : PaletteGroup.values()) {
-            success &= loadFromFile(group);
+
+        // Check for migration
+        if (ConfigMigrator.hasLegacyConfig(CONFIG_DIR) && !ItemGroupsConfigLoader.configExists(CONFIG_DIR)) {
+            LotTweaks.LOGGER.info("Migrating legacy config files to new JSON format...");
+            performMigration();
         }
-        return success;
+
+        // If new config doesn't exist, copy default
+        if (!ItemGroupsConfigLoader.configExists(CONFIG_DIR)) {
+            LotTweaks.LOGGER.debug("Config file does not exist, copying default.");
+            copyDefaultJsonFromResources();
+        }
+
+        // Load from JSON
+        ItemGroupsConfigLoader.LoadResult result = ItemGroupsConfigLoader.load(CONFIG_DIR);
+        LOG_CONFIG_WARNINGS.addAll(result.getWarnings());
+        ItemPalette.loadGroups(result.getGroups());
+
+        return result.getWarnings().isEmpty();
     }
 
-    private static boolean loadFromFile(PaletteGroup group) {
-        File file = getConfigFile(group);
-        try {
-            if (!file.exists()) {
-                LotTweaks.LOGGER.debug("Config file does not exist, copying default.");
-                copyDefaultFromResources(group);
+    private static void performMigration() {
+        ConfigMigrator.MigrationResult migrationResult = ConfigMigrator.migrate(CONFIG_DIR);
+        LOG_CONFIG_WARNINGS.addAll(migrationResult.getWarnings());
+
+        // Save migrated config to new JSON file
+        ItemGroupsConfigLoader.save(CONFIG_DIR, migrationResult.getGroups());
+    }
+
+    private static void copyDefaultJsonFromResources() {
+        CONFIG_DIR.mkdirs();
+        File targetFile = new File(CONFIG_DIR, ItemGroupsConfigLoader.CONFIG_FILE_NAME);
+
+        try (InputStream is = PaletteConfigManager.class.getResourceAsStream(DEFAULT_JSON_RESOURCE)) {
+            if (is == null) {
+                LotTweaks.LOGGER.warn("Default JSON resource not found: {}. Creating empty config.", DEFAULT_JSON_RESOURCE);
+                // Create default empty groups
+                List<List<List<ItemState>>> defaultGroups = ItemGroupsConfigLoader.createDefaultGroups();
+                ItemGroupsConfigLoader.save(CONFIG_DIR, defaultGroups);
+                return;
             }
-            List<String> lines = readFile(file);
-            List<String> linesHolder = getLinesFromFile(group);
-            linesHolder.clear();
-            linesHolder.addAll(lines);
-
-            List<String> warnings = ItemPalette.loadFromLines(lines, group);
-            LOG_CONFIG_WARNINGS.addAll(warnings.stream()
-                .map(w -> String.format("%s (%s)", w, group.name()))
-                .toList());
-
+            Files.copy(is, targetFile.toPath());
         } catch (IOException e) {
-            LotTweaks.LOGGER.error("Failed to load config from file (Group: {})", group.name());
-            e.printStackTrace();
-            return false;
+            LotTweaks.LOGGER.error("Failed to copy default config from resources", e);
+            // Create default empty groups as fallback
+            List<List<List<ItemState>>> defaultGroups = ItemGroupsConfigLoader.createDefaultGroups();
+            ItemGroupsConfigLoader.save(CONFIG_DIR, defaultGroups);
         }
+    }
+
+    public static void saveAllToFile() {
+        List<List<List<ItemState>>> groupData = ItemPalette.getGroupData();
+        ItemGroupsConfigLoader.save(CONFIG_DIR, groupData);
+    }
+
+    public static boolean tryToAddItemGroup(List<ItemState> newCycle, int groupIndex) {
+        List<List<List<ItemState>>> groupData = ItemPalette.getGroupData();
+
+        // Ensure we have enough groups
+        while (groupData.size() <= groupIndex) {
+            groupData.add(new ArrayList<>());
+        }
+
+        // Add the new cycle
+        groupData.get(groupIndex).add(newCycle);
+
+        // Reload to validate
+        ItemPalette.loadGroups(groupData);
+
+        // Save to file
+        saveAllToFile();
         return true;
     }
 
-    private static List<String> readFile(File file) throws IOException {
-        // Try UTF-8 first
-        try {
-            return Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            // ignore
-        }
-        // Try Shift_JIS for legacy files
-        try {
-            return Files.readAllLines(file.toPath(), Charset.forName("Shift_JIS"));
-        } catch (IOException e) {
-            // ignore
-        }
-        // Fall back to system default
-        return Files.readAllLines(file.toPath(), Charset.defaultCharset());
-    }
+    // --- Deprecated methods for backward compatibility ---
 
-    private static void copyDefaultFromResources(PaletteGroup group) throws IOException {
-        CONFIG_DIR.mkdirs();
-        File targetFile = getConfigFile(group);
-
-        try (InputStream is = PaletteConfigManager.class.getResourceAsStream(getDefaultResourcePath(group))) {
-            if (is == null) {
-                throw new IOException("Default resource not found: " + getDefaultResourcePath(group));
-            }
-            Files.copy(is, targetFile.toPath());
-        }
-    }
-
-    public static void writeAllToFile() {
-        for (PaletteGroup group : PaletteGroup.values()) {
-            writeToFile(group);
-        }
-    }
-
-    private static void writeToFile(PaletteGroup group) {
-        LotTweaks.LOGGER.debug("Write config to file.");
-        File file = getConfigFile(group);
-        try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
-            for (String line : getLinesFromFile(group)) {
-                writer.append(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            LotTweaks.LOGGER.error("Failed to write config to file");
-            e.printStackTrace();
-            return;
-        }
-        LotTweaks.LOGGER.debug("Finished.");
-    }
-
+    @Deprecated
     public static boolean tryToAddItemGroup(String newItemGroup, PaletteGroup group) {
-        List<String> lines = getLinesFromFile(group);
-        lines.add(newItemGroup);
+        // Parse the line into ItemStates
+        List<ItemState> cycle = new ArrayList<>();
+        for (String itemStr : newItemGroup.split(",")) {
+            itemStr = itemStr.trim();
+            if (itemStr.isEmpty()) continue;
 
-        List<String> warnings = ItemPalette.loadFromLines(lines, group);
-        if (warnings.isEmpty()) {
-            writeToFile(group);
-            return true;
-        } else {
-            lines.remove(lines.size() - 1);
-            // Reload to restore previous state
-            ItemPalette.loadFromLines(lines, group);
+            net.minecraft.resources.Identifier resourceLocation = net.minecraft.resources.Identifier.parse(itemStr);
+            java.util.Optional<net.minecraft.core.Holder.Reference<net.minecraft.world.item.Item>> itemHolder =
+                    net.minecraft.core.registries.BuiltInRegistries.ITEM.get(resourceLocation);
+
+            if (itemHolder.isEmpty()) {
+                return false;
+            }
+
+            net.minecraft.world.item.Item item = itemHolder.get().value();
+            if (item == null || item == net.minecraft.world.item.Items.AIR) {
+                return false;
+            }
+
+            ItemState itemState = new ItemState(new net.minecraft.world.item.ItemStack(item));
+
+            // Check for duplicates
+            if (ItemPalette.canCycle(itemState.toItemStack(), group.ordinal())) {
+                return false;
+            }
+
+            cycle.add(itemState);
+        }
+
+        if (cycle.size() < 2) {
             return false;
         }
+
+        return tryToAddItemGroup(cycle, group.ordinal());
     }
 }
