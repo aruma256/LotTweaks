@@ -2,7 +2,7 @@
   "config_version": 1,
   "groups": [
     [
-      [{"id":"minecraft:bow","components":"{\"minecraft:enchantments\":{\"minecraft:power\":1b}}"},{"id":"minecraft:bow","components":"{\"minecraft:enchantments\":{\"minecraft:punch\":1b}}"},{"id":"minecraft:bow","components":"{\"minecraft:enchantments\":{\"minecraft:flame\":1b}}"},{"id":"minecraft:bow","components":"{\"minecraft:enchantments\":{\"minecraft:infinity\":1b}}"}],
+      [{"id":"minecraft:bow","components":"{\"minecraft:custom_name\":\"Bow (Power1)\",\"minecraft:enchantments\":{\"minecraft:power\":1b}}"},{"id":"minecraft:bow","components":"{\"minecraft:custom_name\":\"Bow (Punch1)\",\"minecraft:enchantments\":{\"minecraft:punch\":1b}}"},{"id":"minecraft:bow","components":"{\"minecraft:custom_name\":\"Bow (Flame)\",\"minecraft:enchantments\":{\"minecraft:flame\":1b}}"},{"id":"minecraft:bow","components":"{\"minecraft:custom_name\":\"Bow (Infinity)\",\"minecraft:enchantments\":{\"minecraft:infinity\":1b}}"}],
       [{"id":"minecraft:stone"},{"id":"minecraft:granite"},{"id":"minecraft:polished_granite"},{"id":"minecraft:diorite"},{"id":"minecraft:polished_diorite"},{"id":"minecraft:andesite"},{"id":"minecraft:polished_andesite"}],
       [{"id":"minecraft:dirt"},{"id":"minecraft:coarse_dirt"},{"id":"minecraft:podzol"},{"id":"minecraft:crimson_nylium"},{"id":"minecraft:warped_nylium"}],
       [{"id":"minecraft:oak_planks"},{"id":"minecraft:spruce_planks"},{"id":"minecraft:birch_planks"},{"id":"minecraft:jungle_planks"},{"id":"minecraft:acacia_planks"},{"id":"minecraft:dark_oak_planks"},{"id":"minecraft:mangrove_planks"},{"id":"minecraft:crimson_planks"},{"id":"minecraft:warped_planks"}],
