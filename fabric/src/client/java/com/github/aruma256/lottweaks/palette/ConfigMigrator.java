@@ -27,7 +27,6 @@ public class ConfigMigrator {
 
     public static final String LEGACY_PRIMARY = "LotTweaks-BlockGroups.txt";
     public static final String LEGACY_SECONDARY = "LotTweaks-BlockGroups2.txt";
-    public static final String BACKUP_SUFFIX = ".bk";
 
     public static class MigrationResult {
         private final List<List<List<ItemState>>> groups;
@@ -72,10 +71,6 @@ public class ConfigMigrator {
         // Migrate SECONDARY group (index 1)
         List<List<ItemState>> secondaryCycles = migrateLegacyFile(secondaryFile, warnings, "SECONDARY");
         groups.add(secondaryCycles);
-
-        // Backup legacy files
-        backupLegacyFile(primaryFile);
-        backupLegacyFile(secondaryFile);
 
         LotTweaks.LOGGER.info("Migrated legacy config files to new JSON format");
         if (!warnings.isEmpty()) {
@@ -178,25 +173,5 @@ public class ConfigMigrator {
         }
         // Fall back to system default
         return Files.readAllLines(file.toPath(), Charset.defaultCharset());
-    }
-
-    private static void backupLegacyFile(File file) {
-        if (!file.exists()) {
-            return;
-        }
-
-        File backup = new File(file.getAbsolutePath() + BACKUP_SUFFIX);
-        if (backup.exists()) {
-            // Don't overwrite existing backup
-            LotTweaks.LOGGER.warn("Backup file {} already exists, not overwriting", backup.getName());
-            return;
-        }
-
-        boolean renamed = file.renameTo(backup);
-        if (renamed) {
-            LotTweaks.LOGGER.info("Backed up {} to {}", file.getName(), backup.getName());
-        } else {
-            LotTweaks.LOGGER.error("Failed to backup {}", file.getName());
-        }
     }
 }

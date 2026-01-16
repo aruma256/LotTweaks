@@ -162,25 +162,6 @@ public class ConfigMigratorTest {
     }
 
     @Test
-    public void testMigrate_backupsLegacyFiles() throws IOException {
-        createLegacyFile(ConfigMigrator.LEGACY_PRIMARY, "minecraft:stone,minecraft:granite");
-        createLegacyFile(ConfigMigrator.LEGACY_SECONDARY, "minecraft:white_wool,minecraft:orange_wool");
-
-        ConfigMigrator.migrate(tempDir);
-
-        // Original files should be renamed to .bk
-        File primaryBackup = new File(tempDir, ConfigMigrator.LEGACY_PRIMARY + ConfigMigrator.BACKUP_SUFFIX);
-        File secondaryBackup = new File(tempDir, ConfigMigrator.LEGACY_SECONDARY + ConfigMigrator.BACKUP_SUFFIX);
-
-        assertTrue(primaryBackup.exists(), "Primary backup file should exist");
-        assertTrue(secondaryBackup.exists(), "Secondary backup file should exist");
-
-        // Original files should no longer exist
-        assertFalse(new File(tempDir, ConfigMigrator.LEGACY_PRIMARY).exists());
-        assertFalse(new File(tempDir, ConfigMigrator.LEGACY_SECONDARY).exists());
-    }
-
-    @Test
     public void testMigrate_preservesCorrectItems() throws IOException {
         createLegacyFile(ConfigMigrator.LEGACY_PRIMARY,
                 "minecraft:stone,minecraft:granite,minecraft:diorite");
