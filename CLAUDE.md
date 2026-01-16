@@ -56,11 +56,17 @@ CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
 - `src/client/` - Client-side code
   - `LotTweaksClient.java` - Client entry point (`ClientModInitializer`), keybinding registration
   - `keybinding/` - Keybinding classes (V=SmartPick, R=Palette, G=ReplaceBlock, U=ReachExtension)
-  - `palette/` - Block group cycling system (ItemPalette, PaletteConfigManager, ItemGroupParser)
+  - `palette/` - Item group cycling system with component support:
+    - `ItemPalette.java` - Main palette logic with 2-stage lookup (exact match → fallback)
+    - `ItemState.java` - Component-aware ItemStack wrapper (HashMap key compatible)
+    - `ItemGroupsConfigLoader.java` - JSON config read/write with data-driven registry support
+    - `ConfigMigrator.java` - Legacy text format → JSON migration
+    - `PaletteConfigManager.java` - Config lifecycle management
+    - `ItemGroupParser.java` - Item ID string parsing
   - `event/` - Custom event system (scroll, hotbar render, block outline)
   - `mixin/client/` - Mixins for hooking into Minecraft client
   - `render/` - Rendering utilities (ItemStackRenderer, HudTextRenderer, SelectionBoxRenderer)
-- `src/test/` - JUnit tests (30 tests)
+- `src/test/` - JUnit tests (84 tests)
 
 ### Forge Source Structure
 - `src/main/java/com/github/lotqwerty/lottweaks/` - All code in single source set
@@ -76,7 +82,11 @@ CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
 | Mixins | Separate client mixins | Not used |
 
 ### Core Features Implementation
-- **Block Palette** (`palette/`): Manages chains of related blocks (e.g., stone variants) that users can cycle through. Config files: `LotTweaks-BlockGroups.txt`, `LotTweaks-BlockGroups2.txt`
+- **Item Palette** (`palette/`): Manages groups of related items (e.g., stone variants, enchanted bows) that users can cycle through
+  - **Config file**: `LotTweaks-ItemGroups.json` (JSON format with component support)
+  - **Legacy migration**: Old text files (`LotTweaks-BlockGroups.txt`, `LotTweaks-BlockGroups2.txt`) are auto-migrated and backed up
+  - **Component support**: Items with enchantments, custom names, etc. can be registered as distinct entries
+  - **2-stage lookup**: Exact component match first, then fallback to base item (backward compatible)
 - **Extended Reach** (`AdjustRangeHelper.java`): Server-side reach distance modification
 - **Keybinding System** (`keybinding/KeyBase.java`): Base class with press/release/double-tap detection
 - **Network** (`ModNetwork.java`, `ModNetworkClient.java`): Packet handling for ReplaceBlock, ReachExtension, Handshake
