@@ -9,6 +9,7 @@ import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlin
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.aruma256.lottweaks.event.ScrollEvent.ScrollListener;
 import com.github.aruma256.lottweaks.keybinding.PaletteKey;
+import com.github.aruma256.lottweaks.keybinding.PickHistory;
 import com.github.aruma256.lottweaks.keybinding.ReachExtensionKey;
 import com.github.aruma256.lottweaks.keybinding.ReplaceBlockKey;
 import com.github.aruma256.lottweaks.keybinding.SmartPickKey;
@@ -34,10 +35,11 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 {
 	private static String serverVersion = "0";
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lottweaks", "keys"));
+	private static final PickHistory PICK_HISTORY = new PickHistory();
 	private static KeyMapping[] keyMappings = {
-			new SmartPickKey(GLFW.GLFW_KEY_V, CATEGORY),
+			new SmartPickKey(GLFW.GLFW_KEY_V, CATEGORY, PICK_HISTORY),
 			new PaletteKey(GLFW.GLFW_KEY_R, CATEGORY),
-			new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY),
+			new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY, PICK_HISTORY),
 			new ReachExtensionKey(GLFW.GLFW_KEY_U, CATEGORY)
 	};
 

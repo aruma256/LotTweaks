@@ -27,10 +27,12 @@ import net.minecraft.world.phys.HitResult;
 @Environment(EnvType.CLIENT)
 public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, DrawBlockOutlineListener {
 
+	private final PickHistory pickHistory;
 	private BlockState lockedBlockState = null;
 
-	public ReplaceBlockKey(int keyCode, KeyMapping.Category category) {
+	public ReplaceBlockKey(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
 		super("lottweaks-replace", keyCode, category);
+		this.pickHistory = pickHistory;
 	}
 
 	@Override
@@ -108,8 +110,7 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, Dr
 		}
 		BlockState newBlockState = block.getStateForPlacement(new BlockPlaceContext(mc.player, InteractionHand.MAIN_HAND, itemStack, (BlockHitResult)target));
 		ModNetworkClient.sendReplaceBlockPacket(pos, newBlockState, state);
-		// add to history
-		SmartPickKey.addToHistory(state.getCloneItemStack(mc.level, pos, true));
+		pickHistory.add(state.getCloneItemStack(mc.level, pos, true));
 	}
 
 }
