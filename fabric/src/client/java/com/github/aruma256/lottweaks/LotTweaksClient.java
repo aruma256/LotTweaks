@@ -37,7 +37,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lottweaks", "keys"));
 	private static final PickHistory PICK_HISTORY = new PickHistory();
 	private static KeyMapping[] keyMappings = {
-			new SmartPickKey(GLFW.GLFW_KEY_V, CATEGORY, PICK_HISTORY),
+			SmartPickKey.create(GLFW.GLFW_KEY_V, CATEGORY, PICK_HISTORY),
 			new PaletteKey(GLFW.GLFW_KEY_R, CATEGORY),
 			new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY, PICK_HISTORY),
 			new ReachExtensionKey(GLFW.GLFW_KEY_U, CATEGORY)

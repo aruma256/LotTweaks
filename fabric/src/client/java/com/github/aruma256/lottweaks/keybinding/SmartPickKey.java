@@ -31,12 +31,15 @@ public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, Re
 
 	private boolean isHistoryMode = false;
 
-	// TODO: ファクトリメソッドパターンに変更してthis-escapeを解消する
-	@SuppressWarnings("this-escape")
-	public SmartPickKey(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
+	private SmartPickKey(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
 		super("Ex Pick", keyCode, category);
 		this.pickHistory = pickHistory;
-		AttackBlockCallback.EVENT.register(this);
+	}
+
+	public static SmartPickKey create(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
+		SmartPickKey instance = new SmartPickKey(keyCode, category, pickHistory);
+		AttackBlockCallback.EVENT.register(instance);
+		return instance;
 	}
 
 	@Override
