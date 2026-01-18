@@ -93,11 +93,7 @@ public class ItemGroupsConfigLoader {
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
 
             JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
-
-            int configVersion = root.has("config_version") ? root.get("config_version").getAsInt() : 0;
-            if (configVersion != CURRENT_CONFIG_VERSION) {
-                warnings.add("Config version mismatch. Expected " + CURRENT_CONFIG_VERSION + ", got " + configVersion);
-            }
+            validateConfigVersion(root, warnings);
 
             if (!root.has("groups")) {
                 warnings.add("No 'groups' array found in config file.");
@@ -105,51 +101,9 @@ public class ItemGroupsConfigLoader {
             }
 
             JsonArray groupsArray = root.getAsJsonArray("groups");
-            int groupIndex = 0;
-
-            for (JsonElement groupElement : groupsArray) {
-                List<List<ItemState>> cyclesInGroup = new ArrayList<>();
-                JsonArray cyclesArray = groupElement.getAsJsonArray();
-                Set<ItemState> groupRegistered = new HashSet<>();
-                int cycleIndex = 0;
-
-                for (JsonElement cycleElement : cyclesArray) {
-                    List<ItemState> itemsInCycle = new ArrayList<>();
-                    JsonArray itemsArray = cycleElement.getAsJsonArray();
-                    Set<ItemState> cycleRegistered = new HashSet<>();
-
-                    for (JsonElement itemElement : itemsArray) {
-                        JsonObject itemObj = itemElement.getAsJsonObject();
-                        String location = String.format("group[%d].cycle[%d]", groupIndex, cycleIndex);
-
-                        ItemState itemState = parseItemState(itemObj, location, warnings);
-                        if (itemState == null) {
-                            continue;
-                        }
-
-                        if (groupRegistered.contains(itemState) || cycleRegistered.contains(itemState)) {
-                            warnings.add(String.format("'%s' is duplicated. (%s)",
-                                    itemObj.get("id").getAsString(), location));
-                            continue;
-                        }
-
-                        itemsInCycle.add(itemState);
-                        cycleRegistered.add(itemState);
-                    }
-
-                    if (itemsInCycle.size() >= 2) {
-                        cyclesInGroup.add(itemsInCycle);
-                        groupRegistered.addAll(itemsInCycle);
-                    } else if (!itemsArray.isEmpty()) {
-                        warnings.add(String.format("Cycle has less than 2 valid items. (group[%d].cycle[%d])",
-                                groupIndex, cycleIndex));
-                    }
-
-                    cycleIndex++;
-                }
-
+            for (int groupIndex = 0; groupIndex < groupsArray.size(); groupIndex++) {
+                List<List<ItemState>> cyclesInGroup = parseGroup(groupsArray.get(groupIndex).getAsJsonArray(), groupIndex, warnings);
                 groups.add(cyclesInGroup);
-                groupIndex++;
             }
 
         } catch (IOException e) {
@@ -161,6 +115,60 @@ public class ItemGroupsConfigLoader {
         }
 
         return new LoadResult(groups, warnings);
+    }
+
+    private static void validateConfigVersion(JsonObject root, List<String> warnings) {
+        int configVersion = root.has("config_version") ? root.get("config_version").getAsInt() : 0;
+        if (configVersion != CURRENT_CONFIG_VERSION) {
+            warnings.add("Config version mismatch. Expected " + CURRENT_CONFIG_VERSION + ", got " + configVersion);
+        }
+    }
+
+    private static List<List<ItemState>> parseGroup(JsonArray cyclesArray, int groupIndex, List<String> warnings) {
+        List<List<ItemState>> cyclesInGroup = new ArrayList<>();
+        Set<ItemState> groupRegistered = new HashSet<>();
+
+        for (int cycleIndex = 0; cycleIndex < cyclesArray.size(); cycleIndex++) {
+            JsonArray itemsArray = cyclesArray.get(cycleIndex).getAsJsonArray();
+            List<ItemState> itemsInCycle = parseCycle(itemsArray, groupRegistered, groupIndex, cycleIndex, warnings);
+
+            if (itemsInCycle.size() >= 2) {
+                cyclesInGroup.add(itemsInCycle);
+                groupRegistered.addAll(itemsInCycle);
+            } else if (!itemsArray.isEmpty()) {
+                warnings.add(String.format("Cycle has less than 2 valid items. (group[%d].cycle[%d])",
+                        groupIndex, cycleIndex));
+            }
+        }
+
+        return cyclesInGroup;
+    }
+
+    private static List<ItemState> parseCycle(JsonArray itemsArray, Set<ItemState> groupRegistered,
+                                              int groupIndex, int cycleIndex, List<String> warnings) {
+        List<ItemState> itemsInCycle = new ArrayList<>();
+        Set<ItemState> cycleRegistered = new HashSet<>();
+        String location = String.format("group[%d].cycle[%d]", groupIndex, cycleIndex);
+
+        for (JsonElement itemElement : itemsArray) {
+            JsonObject itemObj = itemElement.getAsJsonObject();
+
+            ItemState itemState = parseItemState(itemObj, location, warnings);
+            if (itemState == null) {
+                continue;
+            }
+
+            if (groupRegistered.contains(itemState) || cycleRegistered.contains(itemState)) {
+                warnings.add(String.format("'%s' is duplicated. (%s)",
+                        itemObj.get("id").getAsString(), location));
+                continue;
+            }
+
+            itemsInCycle.add(itemState);
+            cycleRegistered.add(itemState);
+        }
+
+        return itemsInCycle;
     }
 
     private static ItemState parseItemState(JsonObject itemObj, String location, List<String> warnings) {
