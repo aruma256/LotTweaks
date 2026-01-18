@@ -81,49 +81,23 @@ public class PaletteKey extends ItemCycleKeyBase implements ScrollListener, Rend
 
 	@Override
 	public void onScroll(ScrollEvent event) {
-		if (this.pressTime == 0) {
-			return;
-		}
-		Minecraft mc = Minecraft.getInstance();
-		if (!mc.player.isCreative()) {
-			return;
-		}
-		if (event.isCanceled()) {
-			return;
-		}
-		double wheel = event.getScrollDelta();
-		if (wheel == 0) {
-			return;
-		}
-		event.setCanceled(true);
-		if (candidates.isEmpty()) {
-			return;
-		}
-		if (wheel > 0) {
-			this.rotateCandidatesForward();
-		}else {
-			this.rotateCandidatesBackward();
-		}
-		this.updateCurrentItemStack(candidates.getFirst());
+		handleScroll(event);
 	}
 
 	@Override
 	public void onRenderHotbar(RenderHotbarEvent event) {
-		float partialTicks = event.getPartialTicks();
 		if (this.pressTime == 0) {
 			candidates.clear();
 			return;
 		}
-		if (!Minecraft.getInstance().player.isCreative()) {
+		if (!shouldRenderCandidates()) {
 			return;
 		}
-		if (candidates.isEmpty()) {
-			return;
-		}
-		int x = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2 - 90 + Minecraft.getInstance().player.getInventory().getSelectedSlot() * 20 + 2;
-		int y = Minecraft.getInstance().getWindow().getGuiScaledHeight() - 16 - 3;
+		Minecraft mc = Minecraft.getInstance();
+		int x = mc.getWindow().getGuiScaledWidth() / 2 - 90 + mc.player.getInventory().getSelectedSlot() * 20 + 2;
+		int y = mc.getWindow().getGuiScaledHeight() - 16 - 3;
 		y -= 50 + (20 + candidates.size());
-		ItemStackRenderer.renderItemStacks(event.getGuiGraphics(), candidates, x, y, pressTime, partialTicks, lastRotateTime, rotateDirection);
+		ItemStackRenderer.renderItemStacks(event.getGuiGraphics(), candidates, x, y, pressTime, event.getPartialTicks(), lastRotateTime, rotateDirection);
 	}
 
 }

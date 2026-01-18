@@ -3,6 +3,8 @@ package com.github.aruma256.lottweaks.keybinding;
 import java.util.Deque;
 import java.util.LinkedList;
 
+import com.github.aruma256.lottweaks.event.ScrollEvent;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -65,6 +67,45 @@ public class ItemCycleKeyBase extends KeyBase {
 
 	private void updateLastRotateTime() {
 		this.lastRotateTime = this.pressTime;
+	}
+
+	protected boolean shouldRenderCandidates() {
+		if (this.pressTime == 0) {
+			return false;
+		}
+		if (!Minecraft.getInstance().player.isCreative()) {
+			return false;
+		}
+		if (candidates.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+	protected void handleScroll(ScrollEvent event) {
+		if (this.pressTime == 0) {
+			return;
+		}
+		if (!Minecraft.getInstance().player.isCreative()) {
+			return;
+		}
+		if (event.isCanceled()) {
+			return;
+		}
+		double wheel = event.getScrollDelta();
+		if (wheel == 0) {
+			return;
+		}
+		event.setCanceled(true);
+		if (candidates.isEmpty()) {
+			return;
+		}
+		if (wheel > 0) {
+			this.rotateCandidatesForward();
+		}else {
+			this.rotateCandidatesBackward();
+		}
+		this.updateCurrentItemStack(candidates.getFirst());
 	}
 
 }
