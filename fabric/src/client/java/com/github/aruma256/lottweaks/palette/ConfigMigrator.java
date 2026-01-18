@@ -18,7 +18,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * Migrates legacy text-based config files to the new JSON format.
@@ -151,7 +150,7 @@ public class ConfigMigrator {
         }
 
         Item item = itemHolder.get().value();
-        if (item == null || item == Items.AIR) {
+        if (!ItemValidation.isValidItem(item)) {
             return null;
         }
 

@@ -8,7 +8,6 @@ import java.util.Map;
 import com.github.aruma256.lottweaks.LotTweaks;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class ItemPalette {
 
@@ -25,10 +24,7 @@ public class ItemPalette {
     }
 
     public static boolean canCycle(ItemStack itemStack, int groupIndex) {
-        if (itemStack == null || itemStack.isEmpty()) {
-            return false;
-        }
-        if (itemStack.getItem() == null || itemStack.getItem() == Items.AIR) {
+        if (!ItemValidation.isValidStack(itemStack)) {
             return false;
         }
         if (groupIndex < 0 || groupIndex >= GROUP_CACHES.size()) {
@@ -54,7 +50,7 @@ public class ItemPalette {
      * Use this for duplicate detection when adding new items.
      */
     public static boolean containsExactItem(ItemStack itemStack, int groupIndex) {
-        if (itemStack == null || itemStack.isEmpty()) {
+        if (!ItemValidation.isValidStack(itemStack)) {
             return false;
         }
         if (groupIndex < 0 || groupIndex >= GROUP_CACHES.size()) {
@@ -67,10 +63,7 @@ public class ItemPalette {
     }
 
     public static List<ItemStack> getAllCycleItems(ItemStack itemStack, int groupIndex) {
-        if (itemStack == null || itemStack.isEmpty()) {
-            return null;
-        }
-        if (itemStack.getItem() == null || itemStack.getItem() == Items.AIR) {
+        if (!ItemValidation.isValidStack(itemStack)) {
             return null;
         }
         if (groupIndex < 0 || groupIndex >= GROUP_CACHES.size()) {

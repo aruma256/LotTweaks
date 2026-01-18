@@ -35,7 +35,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class ItemGroupsConfigLoader {
 
@@ -180,7 +179,7 @@ public class ItemGroupsConfigLoader {
         }
 
         Item item = itemHolder.get().value();
-        if (item == null || item == Items.AIR) {
+        if (!ItemValidation.isValidItem(item)) {
             warnings.add(String.format("'%s' is not a valid item. (%s)", itemIdStr, location));
             return null;
         }
