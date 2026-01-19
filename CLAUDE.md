@@ -47,6 +47,20 @@ Tests use JUnit Jupiter 5.9.2 with Minecraft Bootstrap for game environment init
 
 CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
 
+### Corporate Network Configuration
+
+If running tests behind a corporate proxy, configure `fabric/gradle.properties`:
+```properties
+systemProp.https.proxyHost=your.proxy.server
+systemProp.https.proxyPort=8080
+systemProp.http.proxyHost=your.proxy.server
+systemProp.http.proxyPort=8080
+systemProp.http.proxyUser=your_username
+systemProp.http.proxyPassword=your_password
+```
+
+Alternatively, configure `~/.gradle/gradle.properties` with the same properties.
+
 ## Architecture
 
 ### Fabric Source Structure (split environment)
