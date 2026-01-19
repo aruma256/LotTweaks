@@ -7,15 +7,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.Bootstrap;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -282,79 +279,6 @@ public class ItemPaletteTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals(Items.GRANITE, result.get(1).getItem());
-    }
-
-    // --- Tests for deprecated API (backward compatibility) ---
-
-    @Test
-    public void testDeprecated_canCycleWithPaletteGroup() {
-        Map<Item, Item> chain = new HashMap<>();
-        chain.put(Items.STONE, Items.GRANITE);
-        chain.put(Items.GRANITE, Items.STONE);
-        ItemPalette.load(chain, PaletteGroup.PRIMARY);
-
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.STONE), PaletteGroup.PRIMARY));
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.GRANITE), PaletteGroup.PRIMARY));
-    }
-
-    @Test
-    public void testDeprecated_getAllCycleItemsWithPaletteGroup() {
-        Map<Item, Item> chain = new HashMap<>();
-        chain.put(Items.STONE, Items.GRANITE);
-        chain.put(Items.GRANITE, Items.DIORITE);
-        chain.put(Items.DIORITE, Items.STONE);
-        ItemPalette.load(chain, PaletteGroup.PRIMARY);
-
-        List<ItemStack> result = ItemPalette.getAllCycleItems(new ItemStack(Items.STONE), PaletteGroup.PRIMARY);
-
-        assertNotNull(result);
-        assertEquals(3, result.size());
-    }
-
-    @Test
-    public void testDeprecated_loadFromLines() {
-        List<String> lines = Arrays.asList(
-                "minecraft:stone,minecraft:granite,minecraft:diorite"
-        );
-        List<String> warnings = ItemPalette.loadFromLines(lines, PaletteGroup.PRIMARY);
-
-        assertTrue(warnings.isEmpty());
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.STONE), PaletteGroup.PRIMARY));
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.GRANITE), PaletteGroup.PRIMARY));
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.DIORITE), PaletteGroup.PRIMARY));
-    }
-
-    @Test
-    public void testDeprecated_clearWithPaletteGroup() {
-        Map<Item, Item> chain = new HashMap<>();
-        chain.put(Items.STONE, Items.GRANITE);
-        chain.put(Items.GRANITE, Items.STONE);
-        ItemPalette.load(chain, PaletteGroup.PRIMARY);
-
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.STONE), PaletteGroup.PRIMARY));
-
-        ItemPalette.clear(PaletteGroup.PRIMARY);
-
-        assertFalse(ItemPalette.canCycle(new ItemStack(Items.STONE), PaletteGroup.PRIMARY));
-    }
-
-    @Test
-    public void testDeprecated_primaryAndSecondaryAreIndependent() {
-        Map<Item, Item> primaryChain = new HashMap<>();
-        primaryChain.put(Items.STONE, Items.GRANITE);
-        primaryChain.put(Items.GRANITE, Items.STONE);
-        ItemPalette.load(primaryChain, PaletteGroup.PRIMARY);
-
-        Map<Item, Item> secondaryChain = new HashMap<>();
-        secondaryChain.put(Items.OAK_PLANKS, Items.SPRUCE_PLANKS);
-        secondaryChain.put(Items.SPRUCE_PLANKS, Items.OAK_PLANKS);
-        ItemPalette.load(secondaryChain, PaletteGroup.SECONDARY);
-
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.STONE), PaletteGroup.PRIMARY));
-        assertFalse(ItemPalette.canCycle(new ItemStack(Items.STONE), PaletteGroup.SECONDARY));
-
-        assertTrue(ItemPalette.canCycle(new ItemStack(Items.OAK_PLANKS), PaletteGroup.SECONDARY));
-        assertFalse(ItemPalette.canCycle(new ItemStack(Items.OAK_PLANKS), PaletteGroup.PRIMARY));
     }
 
     // --- Helper methods ---

@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemPalette {
 
-    private static final int MAX_CYCLE_ITERATIONS = 50000;
-
     // Cache for lookups: each group index maps to a Map<ItemState, List<ItemState>>
     private static final List<Map<ItemState, List<ItemState>>> GROUP_CACHES = new ArrayList<>();
 
@@ -161,73 +159,5 @@ public class ItemPalette {
         if (groupIndex >= 0 && groupIndex < groupData.size()) {
             groupData.get(groupIndex).clear();
         }
-    }
-
-    // --- Deprecated methods for backward compatibility during migration ---
-
-    @Deprecated
-    public static boolean canCycle(ItemStack itemStack, PaletteGroup group) {
-        return canCycle(itemStack, group.ordinal());
-    }
-
-    @Deprecated
-    public static List<ItemStack> getAllCycleItems(ItemStack itemStack, PaletteGroup group) {
-        return getAllCycleItems(itemStack, group.ordinal());
-    }
-
-    @Deprecated
-    public static void clear(PaletteGroup group) {
-        clearGroup(group.ordinal());
-    }
-
-    @Deprecated
-    public static void load(Map<net.minecraft.world.item.Item, net.minecraft.world.item.Item> itemChain, PaletteGroup group) {
-        // Convert old format to new format
-        int groupIndex = group.ordinal();
-
-        // Ensure we have enough groups
-        while (groupData.size() <= groupIndex) {
-            groupData.add(new ArrayList<>());
-        }
-        while (GROUP_CACHES.size() <= groupIndex) {
-            GROUP_CACHES.add(new HashMap<>());
-        }
-
-        groupData.get(groupIndex).clear();
-        GROUP_CACHES.get(groupIndex).clear();
-
-        // Convert chain map to cycles
-        Map<net.minecraft.world.item.Item, Boolean> visited = new HashMap<>();
-        for (net.minecraft.world.item.Item startItem : itemChain.keySet()) {
-            if (visited.containsKey(startItem)) {
-                continue;
-            }
-
-            List<ItemState> cycle = new ArrayList<>();
-            net.minecraft.world.item.Item current = startItem;
-            int counter = 0;
-
-            while (!visited.containsKey(current) && counter < MAX_CYCLE_ITERATIONS) {
-                visited.put(current, true);
-                cycle.add(new ItemState(new ItemStack(current)));
-                current = itemChain.get(current);
-                if (current == null) break;
-                counter++;
-            }
-
-            if (cycle.size() >= 2) {
-                groupData.get(groupIndex).add(cycle);
-                for (ItemState itemState : cycle) {
-                    GROUP_CACHES.get(groupIndex).put(itemState, cycle);
-                }
-            }
-        }
-    }
-
-    @Deprecated
-    public static List<String> loadFromLines(List<String> lines, PaletteGroup group) {
-        ItemGroupParser.ParseResult result = ItemGroupParser.parseGroups(lines);
-        load(result.getItemChain(), group);
-        return result.getWarnings();
     }
 }
