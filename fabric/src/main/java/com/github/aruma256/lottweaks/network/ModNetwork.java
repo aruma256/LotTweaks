@@ -19,8 +19,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-//https://mcforge.readthedocs.io/en/1.16.x/networking/simpleimpl/
-
 public class ModNetwork {
 
 	public static void init() {
@@ -63,16 +61,8 @@ public class ModNetwork {
 
 		@SuppressWarnings("resource")
 		public void handle(Context context) {
-			/*
-			ctx.get().setPacketHandled(true);
-			final ServerPlayer player = ctx.get().getSender();
-			*/
 			final ServerPlayer player = context.player();
 			if (!player.isCreative()) {
-				return;
-			}
-			if (player.level().isClientSide()) {
-				// kore iru ??
 				return;
 			}
 			if (LotTweaks.CONFIG.REQUIRE_OP_TO_USE_REPLACE && context.server().getPlayerList().getOps().get(player.nameAndId()) == null) {
@@ -89,7 +79,6 @@ public class ModNetwork {
 			if (player.level().getBlockState(pos) != checkState) {
 				return;
 			}
-			//
 			context.server().execute(() -> {
 				player.level().setBlock(pos, state, 2);
 			});
@@ -125,10 +114,6 @@ public class ModNetwork {
 		}
 
 		public void handle(Context context) {
-			/*
-			ctx.get().setPacketHandled(true);
-			final ServerPlayer player = ctx.get().getSender();
-			*/
 			final ServerPlayer player = context.player();
 			if (!player.isCreative()) {
 				return;
