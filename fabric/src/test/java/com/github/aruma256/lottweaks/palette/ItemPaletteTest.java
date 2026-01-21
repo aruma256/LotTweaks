@@ -1,28 +1,23 @@
 package com.github.aruma256.lottweaks.palette;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.SharedConstants;
+import com.github.aruma256.lottweaks.MinecraftBootstrapExtension;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+@ExtendWith(MinecraftBootstrapExtension.class)
 public class ItemPaletteTest {
-
-    @BeforeAll
-    public static void setup() {
-        SharedConstants.tryDetectVersion();
-        Bootstrap.bootStrap();
-    }
 
     @BeforeEach
     public void resetPalette() {

@@ -1,27 +1,21 @@
 package com.github.aruma256.lottweaks.palette;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.SharedConstants;
+import com.github.aruma256.lottweaks.MinecraftBootstrapExtension;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
 
+@ExtendWith(MinecraftBootstrapExtension.class)
 public class ItemStateTest {
-
-    @BeforeAll
-    public static void setup() {
-        SharedConstants.tryDetectVersion();
-        Bootstrap.bootStrap();
-    }
 
     @Test
     public void testEqualsWithSameItem() {

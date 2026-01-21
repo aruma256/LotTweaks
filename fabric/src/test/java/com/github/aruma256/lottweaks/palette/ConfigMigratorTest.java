@@ -1,7 +1,7 @@
 package com.github.aruma256.lottweaks.palette;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,20 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import net.minecraft.SharedConstants;
-import net.minecraft.server.Bootstrap;
+import com.github.aruma256.lottweaks.MinecraftBootstrapExtension;
+
 import net.minecraft.world.item.Items;
 
+@ExtendWith(MinecraftBootstrapExtension.class)
 public class ConfigMigratorTest {
 
     @TempDir
     File tempDir;
-
-    @BeforeAll
-    public static void setup() {
-        SharedConstants.tryDetectVersion();
-        Bootstrap.bootStrap();
-    }
 
     @Test
     public void testHasLegacyConfig_returnsFalseWhenNoFiles() {
