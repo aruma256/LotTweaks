@@ -1,18 +1,18 @@
 package com.github.aruma256.lottweaks.keybinding;
 
 import com.github.aruma256.lottweaks.LotTweaks;
-import com.github.aruma256.lottweaks.ModNetworkClient;
 import com.github.aruma256.lottweaks.LotTweaksClient;
-import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
+import com.github.aruma256.lottweaks.ModNetworkClient;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
-import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.aruma256.lottweaks.render.HudTextRenderer;
 import com.github.aruma256.lottweaks.render.SelectionBoxRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -25,7 +25,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 @Environment(EnvType.CLIENT)
-public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, DrawBlockOutlineListener {
+public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener {
 
 	private final PickHistory pickHistory;
 	private BlockState lockedBlockState = null;
@@ -55,17 +55,14 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener, Dr
 		lockedBlockState = null;
 	}
 
-	@Override
-	public void onDrawBlockHighlightEvent(final DrawBlockOutlineEvent event) {
-		if (this.pressTime == 0) {
-			return;
+	public boolean renderBlockOutline(WorldRenderContext context, BlockOutlineRenderState outlineRenderState) {
+		if (this.pressTime == 0 || lockedBlockState == null) {
+			return true; // デフォルト描画を許可
 		}
-		if (lockedBlockState == null) {
-			return;
+		if (SelectionBoxRenderer.render(context, outlineRenderState.pos())) {
+			return false; // カスタム描画したのでデフォルトをキャンセル
 		}
-		if (SelectionBoxRenderer.render(event.getCamera(), event.getPoseStack(), event.getBuffers(), event.getPos(), 0f, 1f, 0f, 0f)) {
-			event.setCanceled(true);
-		}
+		return true;
 	}
 
 	@Override

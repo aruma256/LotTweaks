@@ -5,8 +5,7 @@
     "client": [
         "MouseScrollRedirector",
         "HotbarRendererHook",
-        "VanillaPickInvoker",
-        "DrawShapeOutlineInjector"
+        "VanillaPickInvoker"
     ],
     "injectors": {
         "defaultRequire": 1

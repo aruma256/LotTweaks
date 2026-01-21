@@ -2,11 +2,9 @@ package com.github.aruma256.lottweaks;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
-import com.github.aruma256.lottweaks.event.ScrollEvent;
-import com.github.aruma256.lottweaks.event.DrawBlockOutlineEvent.DrawBlockOutlineListener;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
+import com.github.aruma256.lottweaks.event.ScrollEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent.ScrollListener;
 import com.github.aruma256.lottweaks.keybinding.PaletteKey;
 import com.github.aruma256.lottweaks.keybinding.PickHistory;
@@ -22,6 +20,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
@@ -36,10 +35,11 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 	private static String serverVersion = "0";
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lottweaks", "keys"));
 	private static final PickHistory PICK_HISTORY = new PickHistory();
+	private static final ReplaceBlockKey REPLACE_BLOCK_KEY = new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY, PICK_HISTORY);
 	private static KeyMapping[] keyMappings = {
 			SmartPickKey.create(GLFW.GLFW_KEY_V, CATEGORY, PICK_HISTORY),
 			new PaletteKey(GLFW.GLFW_KEY_R, CATEGORY),
-			new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY, PICK_HISTORY),
+			REPLACE_BLOCK_KEY,
 			new ReachExtensionKey(GLFW.GLFW_KEY_U, CATEGORY)
 	};
 
@@ -53,6 +53,10 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 		for (KeyMapping key : keyMappings) {
 			registerKey(key);
 		}
+		//
+		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, outlineRenderState) -> {
+			return REPLACE_BLOCK_KEY.renderBlockOutline(context, outlineRenderState);
+		});
 		//
 		ClientPlayConnectionEvents.INIT.register(this);
 		ClientPlayConnectionEvents.JOIN.register(this);
@@ -71,9 +75,6 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 		}
 		if (obj instanceof ScrollListener) {
 			ScrollEvent.registerListener((ScrollListener)obj);
-		}
-		if (obj instanceof DrawBlockOutlineListener) {
-			DrawBlockOutlineEvent.registerListener((DrawBlockOutlineListener)obj);
 		}
 	}
 
