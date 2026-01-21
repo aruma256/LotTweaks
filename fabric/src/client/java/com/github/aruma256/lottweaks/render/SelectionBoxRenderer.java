@@ -3,14 +3,16 @@ package com.github.aruma256.lottweaks.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.Camera;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class SelectionBoxRenderer {
 
@@ -28,17 +30,21 @@ public class SelectionBoxRenderer {
 		1 + OUTLINE_GROW_FACTOR, 1 + OUTLINE_GROW_FACTOR, 1 + OUTLINE_GROW_FACTOR
 	);
 
-	public static boolean render(Camera activeRenderInfo, PoseStack matrixStack, VertexConsumer buffer, BlockPos blockPos, float partialTicks, float r, float g, float b) {
+	public static boolean render(WorldRenderContext context, BlockPos blockPos) {
 		if (!Minecraft.getInstance().level.getWorldBorder().isWithinBounds(blockPos)) {
 			return false;
 		}
 
-		Vec3 vector3d = activeRenderInfo.position();
+		Camera camera = context.gameRenderer().getMainCamera();
+		PoseStack matrixStack = context.matrices();
+		VertexConsumer buffer = context.consumers().getBuffer(RenderTypes.lines());
+
+		Vec3 vector3d = camera.position();
 		double d0 = vector3d.x();
 		double d1 = vector3d.y();
 		double d2 = vector3d.z();
 
-		renderHitOutline(matrixStack, buffer, activeRenderInfo.entity(), d0, d1, d2, blockPos);
+		renderHitOutline(matrixStack, buffer, camera.entity(), d0, d1, d2, blockPos);
 
 		return true;
 	}

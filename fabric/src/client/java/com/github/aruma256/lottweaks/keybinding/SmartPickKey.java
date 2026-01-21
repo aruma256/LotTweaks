@@ -1,8 +1,5 @@
 package com.github.aruma256.lottweaks.keybinding;
 
-import java.util.Deque;
-import java.util.LinkedList;
-
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.ScrollEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
@@ -29,39 +26,20 @@ import net.minecraft.world.phys.HitResult;
 @Environment(EnvType.CLIENT)
 public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, RenderHotbarListener, AttackBlockCallback {
 
-	private static final int HISTORY_SIZE = 10;
-
-	private static final BlockPos[] SEARCH_POS = {
-			new BlockPos(1, 0, 0),
-			new BlockPos(-1, 0, 0),
-			new BlockPos(0, 1, 0),
-			new BlockPos(0, -1, 0),
-			new BlockPos(0, 0, 1),
-			new BlockPos(0, 0, -1),
-			//
-			new BlockPos(1, 1, 0),
-			new BlockPos(1, -1, 0),
-			new BlockPos(-1, 1, 0),
-			new BlockPos(-1, -1, 0),
-			new BlockPos(1, 0, 1),
-			new BlockPos(1, 0, -1),
-			new BlockPos(-1, 0, 1),
-			new BlockPos(-1, 0, -1),
-			new BlockPos(0, 1, 1),
-			new BlockPos(0, 1, -1),
-			new BlockPos(0, -1, 1),
-			new BlockPos(0, -1, -1),
-			};
-
-	private static final Deque<ItemStack> breakHistory = new LinkedList<>();
+	private final BlockSearcher blockSearcher = new BlockSearcher();
+	private final PickHistory pickHistory;
 
 	private boolean isHistoryMode = false;
 
-	// TODO: ファクトリメソッドパターンに変更してthis-escapeを解消する
-	@SuppressWarnings("this-escape")
-	public SmartPickKey(int keyCode, KeyMapping.Category category) {
+	private SmartPickKey(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
 		super("Ex Pick", keyCode, category);
-		AttackBlockCallback.EVENT.register(this);
+		this.pickHistory = pickHistory;
+	}
+
+	public static SmartPickKey create(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
+		SmartPickKey instance = new SmartPickKey(keyCode, category, pickHistory);
+		AttackBlockCallback.EVENT.register(instance);
+		return instance;
 	}
 
 	@Override
@@ -119,21 +97,14 @@ public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, Re
 		}
 		addToCandidatesWithDedup(itemStack);
 		BlockPos pos = ((BlockHitResult)rayTraceResult).getBlockPos();
-		for (BlockPos posDiff : SEARCH_POS) {
-			try {
-				BlockState state = mc.level.getBlockState(pos.offset(posDiff));
-				itemStack = state.getCloneItemStack(mc.level, pos, true);
-				if (!itemStack.isEmpty()) {
-					addToCandidatesWithDedup(itemStack);
-				}
-			} catch (Exception e) {
-			}
+		for (ItemStack surroundingItem : blockSearcher.searchSurroundingBlocks(pos)) {
+			addToCandidatesWithDedup(surroundingItem);
 		}
 	}
 
 	private void historyModePick() {
-		if (!breakHistory.isEmpty()) {
-			candidates.addAll(breakHistory);
+		if (!pickHistory.isEmpty()) {
+			candidates.addAll(pickHistory.getAll());
 			candidates.addFirst(Minecraft.getInstance().player.getInventory().getSelectedItem());
 			isHistoryMode = true;
 		}
@@ -183,27 +154,7 @@ public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, Re
 		}
 		BlockState blockState = world.getBlockState(pos);
 		ItemStack itemStack = blockState.getCloneItemStack(world, pos, true);
-		addToHistory(itemStack);
-	}
-
-	protected static void addToHistory(ItemStack itemStack) {
-		if (itemStack == null || itemStack.isEmpty()) {
-			return;
-		}
-		Deque<ItemStack> tmpHistory = new LinkedList<>();
-		tmpHistory.addAll(breakHistory);
-		breakHistory.clear();
-		while(!tmpHistory.isEmpty()) {
-			if (!ItemStack.matches(tmpHistory.peekFirst(), itemStack)) {
-				breakHistory.add(tmpHistory.pollFirst());
-			} else {
-				tmpHistory.removeFirst();
-			}
-		}
-		while (breakHistory.size() >= HISTORY_SIZE) {
-			breakHistory.pollLast();
-		}
-		breakHistory.addFirst(itemStack);
+		pickHistory.add(itemStack);
 	}
 
 }

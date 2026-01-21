@@ -18,7 +18,10 @@ loader_version=X.XX.X
 loom_version=X.XX-SNAPSHOT
 fabric_version=X.XXX.X+X.XX.X
 archives_base_name=LotTweaks-mcX.XX.X-fabric
+mod_version=X.X.X
 ```
+
+**注意**: `mod_version` を変更する場合は `src/main/java/com/github/aruma256/lottweaks/LotTweaks.java` の `VERSION` 定数も同じ値に更新すること。
 
 ## 3. fabric.mod.json を更新
 
