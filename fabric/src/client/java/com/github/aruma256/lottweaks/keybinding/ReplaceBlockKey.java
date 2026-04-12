@@ -10,7 +10,7 @@ import com.github.aruma256.lottweaks.render.SelectionBoxRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.state.BlockOutlineRenderState;
 import net.minecraft.client.Minecraft;
@@ -55,7 +55,7 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener {
 		lockedBlockState = null;
 	}
 
-	public boolean renderBlockOutline(WorldRenderContext context, BlockOutlineRenderState outlineRenderState) {
+	public boolean renderBlockOutline(LevelRenderContext context, BlockOutlineRenderState outlineRenderState) {
 		if (this.pressTime == 0 || lockedBlockState == null) {
 			return true; // デフォルト描画を許可
 		}

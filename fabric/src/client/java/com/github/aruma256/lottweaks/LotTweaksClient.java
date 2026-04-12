@@ -18,9 +18,9 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
@@ -54,7 +54,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 			registerKey(key);
 		}
 		//
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, outlineRenderState) -> {
+		LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, outlineRenderState) -> {
 			return REPLACE_BLOCK_KEY.renderBlockOutline(context, outlineRenderState);
 		});
 		//
@@ -80,7 +80,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	private static void registerKey(KeyMapping key) {
 		registerToMyEventBus(key);
-		KeyBindingHelper.registerKeyBinding(key);
+		KeyMappingHelper.registerKeyMapping(key);
 	}
 
 	public static boolean requireServerVersion(String requiredVersion) {

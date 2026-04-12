@@ -12,7 +12,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.ChatFormatting;
@@ -51,7 +51,7 @@ public class LotTweaksCommand implements ClientCommandRegistrationCallback {
 	}
 
 	private static LiteralArgumentBuilder<FabricClientCommandSource> literal(String string) {
-		return ClientCommandManager.literal(string);
+		return ClientCommands.literal(string);
 	}
 
 	private void executeAdd(int groupIndex) throws LotTweaksCommandRuntimeException {

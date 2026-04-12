@@ -3,7 +3,7 @@ package com.github.aruma256.lottweaks.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -30,14 +30,14 @@ public class SelectionBoxRenderer {
 		1 + OUTLINE_GROW_FACTOR, 1 + OUTLINE_GROW_FACTOR, 1 + OUTLINE_GROW_FACTOR
 	);
 
-	public static boolean render(WorldRenderContext context, BlockPos blockPos) {
+	public static boolean render(LevelRenderContext context, BlockPos blockPos) {
 		if (!Minecraft.getInstance().level.getWorldBorder().isWithinBounds(blockPos)) {
 			return false;
 		}
 
 		Camera camera = context.gameRenderer().getMainCamera();
-		PoseStack matrixStack = context.matrices();
-		VertexConsumer buffer = context.consumers().getBuffer(RenderTypes.lines());
+		PoseStack matrixStack = context.poseStack();
+		VertexConsumer buffer = context.bufferSource().getBuffer(RenderTypes.lines());
 
 		Vec3 vector3d = camera.position();
 		double d0 = vector3d.x();

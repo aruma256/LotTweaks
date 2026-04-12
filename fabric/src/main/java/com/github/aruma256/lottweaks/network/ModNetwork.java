@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.github.aruma256.lottweaks.AdjustRangeHelper;
 import com.github.aruma256.lottweaks.LotTweaks;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.FriendlyByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.Context;
@@ -22,15 +22,15 @@ import net.minecraft.world.phys.Vec3;
 public class ModNetwork {
 
 	public static void init() {
-		PayloadTypeRegistry.playC2S().register(ReplaceBlockPacket.TYPE, ReplaceBlockPacket.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ReplaceBlockPacket.TYPE, ReplaceBlockPacket.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ReplaceBlockPacket.TYPE, (payload, context) -> { payload.handle(context); });
-		PayloadTypeRegistry.playC2S().register(ReachExtensionPacket.TYPE, ReachExtensionPacket.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ReachExtensionPacket.TYPE, ReachExtensionPacket.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ReachExtensionPacket.TYPE, (payload, context) -> { payload.handle(context); });
-		PayloadTypeRegistry.playS2C().register(HandshakePacket.TYPE, HandshakePacket.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(HandshakePacket.TYPE, HandshakePacket.CODEC);
 	}
 
 	public static void sendHandshakePacket(ServerPlayer player) {
-		FriendlyByteBuf buf = PacketByteBufs.create();
+		FriendlyByteBuf buf = FriendlyByteBufs.create();
 		new HandshakePacket(LotTweaks.VERSION).toBytes(buf);
 		ServerPlayNetworking.send(player, new HandshakePacket(LotTweaks.VERSION));
 	}
