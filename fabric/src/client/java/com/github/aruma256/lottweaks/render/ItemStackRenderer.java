@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import com.github.aruma256.lottweaks.LotTweaks;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
 public final class ItemStackRenderer {
@@ -20,11 +20,11 @@ public final class ItemStackRenderer {
 	// Linear layout constants
 	private static final int LINEAR_ITEM_SPACING = 16;
 
-	public static void renderItemStacks(GuiGraphics guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
+	public static void renderItemStacks(GuiGraphicsExtractor guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
 		renderItemStacks(guiGraphics, stacks, x, y, t, pt, lt, direction, RenderMode.CIRCLE);
 	}
 
-	public static void renderItemStacks(GuiGraphics guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction, RenderMode renderMode) {
+	public static void renderItemStacks(GuiGraphicsExtractor guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction, RenderMode renderMode) {
 		if (stacks.isEmpty()) {
 			return;
 		}
@@ -40,7 +40,7 @@ public final class ItemStackRenderer {
 		LINE,
 	}
 
-	private static void circular(GuiGraphics guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
+	private static void circular(GuiGraphicsExtractor guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
 		if (LotTweaks.CONFIG.DISABLE_ANIMATIONS) {
 			t = Integer.MAX_VALUE;
 			pt = 0;
@@ -59,7 +59,7 @@ public final class ItemStackRenderer {
 		}
 	}
 
-	private static void linear(GuiGraphics guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
+	private static void linear(GuiGraphicsExtractor guiGraphics, Collection<ItemStack> stacks, int x, int y, int t, float pt, int lt, byte direction) {
 		int i = 0;
 		double afterimage = 1 - Math.tanh((t + pt - lt) / AFTERIMAGE_FADE_SPEED);
 		for (ItemStack c: stacks) {
@@ -68,8 +68,8 @@ public final class ItemStackRenderer {
 		}
 	}
 
-	private static void renderAndDecorateItem(GuiGraphics guiGraphics, ItemStack itemStack, int x, int y) {
-		guiGraphics.renderItem(itemStack, x, y);
+	private static void renderAndDecorateItem(GuiGraphicsExtractor guiGraphics, ItemStack itemStack, int x, int y) {
+		guiGraphics.item(itemStack, x, y);
 	}
 
 }

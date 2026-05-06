@@ -11,7 +11,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.phys.HitResult;
 
 @Environment(EnvType.CLIENT)
@@ -26,7 +26,7 @@ public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 
 	@Override
 	public void onRenderHotbar(RenderHotbarEvent event) {
-		GuiGraphics guiGraphics = event.getGuiGraphics();
+		GuiGraphicsExtractor guiGraphics = event.getGuiGraphics();
 		if (this.pressTime == 0) {
 			return;
 		}

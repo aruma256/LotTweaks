@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class RenderHotbarEvent {
 	private static final ArrayList<RenderHotbarListener> listeners = new ArrayList<>();
@@ -14,22 +14,22 @@ public class RenderHotbarEvent {
 		listeners.add(listener);
 	}
 
-	public static void post(GuiGraphics guiGraphics, float tickDelta) {
+	public static void post(GuiGraphicsExtractor guiGraphics, float tickDelta) {
 		RenderHotbarEvent event = new RenderHotbarEvent(guiGraphics, tickDelta);
 		for (RenderHotbarListener iListener : listeners) {
 			iListener.onRenderHotbar(event);
 		}
 	}
 
-	private final GuiGraphics guiGraphics;
+	private final GuiGraphicsExtractor guiGraphics;
 	private final float tickDelta;
 
-	private RenderHotbarEvent(GuiGraphics guiGraphics, float tickDelta) {
+	private RenderHotbarEvent(GuiGraphicsExtractor guiGraphics, float tickDelta) {
 		this.guiGraphics = guiGraphics;
 		this.tickDelta = tickDelta;
 	}
 	
-	public GuiGraphics getGuiGraphics() {
+	public GuiGraphicsExtractor getGuiGraphics() {
 		return this.guiGraphics;
 	}
 

@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 @Mixin(Minecraft.class)
 public interface VanillaPickInvoker {
 	
-	@Invoker("pickBlock")
+	@Invoker("pickBlockOrEntity")
 	public void lottweaks_invokeVanillaItemPick();
 
 }
