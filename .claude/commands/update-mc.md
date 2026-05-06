@@ -3,12 +3,16 @@
 
 ## 1. 依存関係のバージョンを確認
 
-更新先の Minecraft version を確認する。
-加えて、ユーザーに https://fabricmc.net/develop/ にアクセスさせ、各バージョン番号を取得してもらう
+更新先の Minecraft version を確認した上で、以下の API エンドポイントから直接取得する（`fabricmc.net/develop/` は JS レンダリングで WebFetch から読めないが、これらは静的に返る）:
 
-- Fabric Loader version
-- Fabric Loom version
-- Fabric API version
+- **Fabric Loader**: `https://meta.fabricmc.net/v2/versions/loader/{minecraft_version}` を WebFetch
+  - JSON 配列の先頭で `loader.stable: true` のものを採用
+- **Fabric API**: `https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml` を WebFetch
+  - `<version>` 要素のうち末尾が `+{minecraft_version}` で、その MC バージョンに該当する最大の番号を採用
+- **Fabric Loom**: `https://maven.fabricmc.net/net/fabricmc/fabric-loom/maven-metadata.xml` を WebFetch
+  - 通常はマイナーアップデートでは現状維持。MC のメジャーアップデート時のみ最新の安定 SNAPSHOT を確認
+
+これらが取得できなかった場合のみ、ユーザーに https://fabricmc.net/develop/ から取得してもらう。
 
 ## 2. gradle.properties を更新
 
