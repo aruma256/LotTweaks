@@ -23,6 +23,7 @@ mod_version=...
 
 **注意**:
 - 2026年以降はメジャーバージョンが年（例: `26.1`）になっている
+- `mod_version` はコード変更が伴うときのみ上げる。MCのパッチバージョン更新（例: `26.1` → `26.1.1`）でAPI変更がなく無修正で済んだ場合は据え置く
 - `mod_version` を変更する場合は `src/main/java/com/github/aruma256/lottweaks/LotTweaks.java` の `VERSION` 定数も同じ値に更新すること
 
 ## 2.5. build.gradle の確認（26.1 以降）
