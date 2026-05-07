@@ -21,7 +21,7 @@ public class ReachExtensionKey extends KeyBase implements RenderHotbarListener {
 	private static float reachDistance = DEFAULT_REACH_DISTANCE;
 
 	public ReachExtensionKey(int keyCode, KeyMapping.Category category) {
-		super("lottweaks-adjustrange", keyCode, category);
+		super("key.lottweaks.reach_extension", keyCode, category);
 	}
 
 	@Override

@@ -31,7 +31,7 @@ public class ReplaceBlockKey extends KeyBase implements RenderHotbarListener {
 	private BlockState lockedBlockState = null;
 
 	public ReplaceBlockKey(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
-		super("lottweaks-replace", keyCode, category);
+		super("key.lottweaks.replace_block", keyCode, category);
 		this.pickHistory = pickHistory;
 	}
 

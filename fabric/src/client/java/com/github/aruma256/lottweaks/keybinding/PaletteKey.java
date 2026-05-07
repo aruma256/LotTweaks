@@ -22,7 +22,7 @@ public class PaletteKey extends ItemCycleKeyBase implements ScrollListener, Rend
 	private int phase = 0;
 
 	public PaletteKey(int keyCode, KeyMapping.Category category) {
-		super("lottweaks-rotate", keyCode, category);
+		super("key.lottweaks.palette", keyCode, category);
 	}
 
 	private void updatePhase() {

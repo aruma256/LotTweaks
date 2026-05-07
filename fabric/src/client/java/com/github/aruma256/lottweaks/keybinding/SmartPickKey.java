@@ -32,7 +32,7 @@ public class SmartPickKey extends ItemCycleKeyBase implements ScrollListener, Re
 	private boolean isHistoryMode = false;
 
 	private SmartPickKey(int keyCode, KeyMapping.Category category, PickHistory pickHistory) {
-		super("Ex Pick", keyCode, category);
+		super("key.lottweaks.smart_pick", keyCode, category);
 		this.pickHistory = pickHistory;
 	}
 
