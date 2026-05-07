@@ -8,11 +8,11 @@ LotTweaks adds tweaks for builders to increase productivity in Creative mode.
 
 Extend the reach range
 
-![](docs/adjust_range.gif)
+![](docs/reach_extension.gif)
 
 Define block-groups and quickly switch between them
 
-![](docs/rotate.gif)
+![](docs/palette.gif)
 
 and more!
 

@@ -87,7 +87,7 @@ CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
   - **Legacy migration**: Old text files (`LotTweaks-BlockGroups.txt`, `LotTweaks-BlockGroups2.txt`) are auto-migrated and backed up
   - **Component support**: Items with enchantments, custom names, etc. can be registered as distinct entries
   - **2-stage lookup**: Exact component match first, then fallback to base item (backward compatible)
-- **Extended Reach** (`AdjustRangeHelper.java`): Server-side reach distance modification
+- **Reach Extension** (`AdjustRangeHelper.java`): Server-side reach distance modification
 - **Keybinding System** (`keybinding/KeyBase.java`): Base class with press/release/double-tap detection
 - **Network** (`ModNetwork.java`, `ModNetworkClient.java`): Packet handling for ReplaceBlock, ReachExtension, Handshake
 
