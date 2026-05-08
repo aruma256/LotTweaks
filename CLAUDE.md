@@ -33,7 +33,7 @@ cd forge
 ./gradlew build
 ```
 
-Both use Java 21 and official Mojang mappings.
+Fabric uses Java 25 (Minecraft 26.1 以降の要件) で、Forge は Java 21。両者とも official Mojang mappings を使用。
 
 ## Testing
 
@@ -45,7 +45,7 @@ cd fabric
 
 Tests use JUnit Jupiter 5.9.2 with Minecraft Bootstrap for game environment initialization. See `fabric/src/test/java/com/github/aruma256/lottweaks/LotTweaksTest.java` for examples.
 
-CI runs on GitHub Actions (Ubuntu 24.04, Java 21) for all branches.
+CI runs on GitHub Actions (Ubuntu 24.04, Java 25) for all branches.
 
 ## Architecture
 
