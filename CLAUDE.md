@@ -4,9 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LotTweaks is a Minecraft mod that adds productivity tweaks for builders in Creative mode. The repository contains two implementations:
+LotTweaks is a Minecraft mod that adds productivity tweaks for builders in Creative mode. The repository は mod loader ごとにサブディレクトリへ実装を分ける構成で、現状は Fabric 版のみが active：
 - `fabric/` - Fabric mod loader (Minecraft 1.21.8) **← 現在の主な作業対象**
-- `forge/` - Forge mod loader (Minecraft 1.21, mod version 2.2.5)
+
+過去には `forge/` サブディレクトリで Forge 版（Minecraft 1.21、mod version 2.2.5）も保守していたが、メンテナンス停止に伴い削除済み（履歴は git log を参照）。今後 NeoForge 等への移植を行う場合も同じ要領で兄弟ディレクトリとして追加する想定。
 
 ## Development Environment
 
@@ -27,13 +28,11 @@ cd fabric
 ./gradlew jar        # Build JAR only
 ```
 
-### Forge
-```bash
-cd forge
-./gradlew build
-```
+Fabric uses Java 25（Minecraft 26.1 以降の要件）、official Mojang mappings を使用。
 
-Fabric uses Java 25 (Minecraft 26.1 以降の要件) で、Forge は Java 21。両者とも official Mojang mappings を使用。
+### Forge
+
+削除済み
 
 ## Testing
 
@@ -67,19 +66,6 @@ CI runs on GitHub Actions (Ubuntu 24.04, Java 25) for all branches.
   - `mixin/client/` - Mixins for hooking into Minecraft client
   - `render/` - Rendering utilities (ItemStackRenderer, HudTextRenderer, SelectionBoxRenderer)
 - `src/test/` - JUnit tests (84 tests)
-
-### Forge Source Structure
-- `src/main/java/com/github/lotqwerty/lottweaks/` - All code in single source set
-- Uses Forge annotations (`@Mod`) and event bus instead of Fabric's interfaces
-
-### Key Differences Between Fabric and Forge
-| Aspect | Fabric | Forge |
-|--------|--------|-------|
-| Package | `com.github.aruma256.lottweaks` | `com.github.lotqwerty.lottweaks` |
-| Entry point | `ModInitializer` interface | `@Mod` annotation |
-| Config | Static fields in `CONFIG` class | `ForgeConfigSpec` builders |
-| Events | Custom event bus + Fabric API | MinecraftForge event bus |
-| Mixins | Separate client mixins | Not used |
 
 ### Core Features Implementation
 - **Item Palette** (`palette/`): Manages groups of related items (e.g., stone variants, enchanted bows) that users can cycle through
