@@ -103,7 +103,7 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 		if (LotTweaks.CONFIG.SHOW_BLOCKCONFIG_ERROR_LOG_TO_CHAT) {
 			Minecraft mc = Minecraft.getInstance();
 			for (String line : PaletteConfigManager.LOG_CONFIG_WARNINGS) {
-				mc.getChatListener().handleSystemMessage(Component.literal(String.format("LotTweaks: %s%s", ChatFormatting.RED, line)), false);
+				mc.gui.hud.getChat().addClientSystemMessage(Component.literal(String.format("LotTweaks: %s%s", ChatFormatting.RED, line)));
 			}
 		}
 	}
