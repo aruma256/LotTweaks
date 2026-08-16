@@ -48,8 +48,6 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	@Override
 	public void onInitializeClient() {
-		PaletteConfigManager.loadAllFromFile();
-		//
 		for (KeyMapping key : keyMappings) {
 			registerKey(key);
 		}
@@ -115,7 +113,8 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 
 	@Override
 	public void onPlayReady(ClientPacketListener handler, PacketSender sender, Minecraft client) {
-		// Reload config now that dynamic registries (enchantments, etc.) are available
+		// ItemStack default components are not bound during client initialization.
+		// Build the palette only after the connection registries are ready.
 		PaletteConfigManager.loadAllFromFile();
 		showErrorLogToChat();
 		ReachExtensionKey.resetRange();
