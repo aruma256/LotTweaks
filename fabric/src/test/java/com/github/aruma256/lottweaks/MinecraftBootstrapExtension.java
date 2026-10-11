@@ -18,8 +18,8 @@ public class MinecraftBootstrapExtension implements BeforeAllCallback {
         if (!initialized) {
             SharedConstants.tryDetectVersion();
             Bootstrap.bootStrap();
-            // 26.1: コンポーネントのバインドが必要（タグを含むルックアップが必要）
-            HolderLookup.Provider lookup = VanillaRegistries.createLookup();
+            // 26.3: ワールドレジストリのルックアップでコンポーネントをバインドする（タグを含む）
+            HolderLookup.Provider lookup = VanillaRegistries.createWorldLookup();
             BuiltInRegistries.DATA_COMPONENT_INITIALIZERS.build(lookup).forEach(pending -> pending.apply());
             initialized = true;
         }

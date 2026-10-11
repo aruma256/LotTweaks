@@ -1,7 +1,5 @@
 package com.github.aruma256.lottweaks;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent;
 import com.github.aruma256.lottweaks.event.RenderHotbarEvent.RenderHotbarListener;
 import com.github.aruma256.lottweaks.event.ScrollEvent;
@@ -12,6 +10,7 @@ import com.github.aruma256.lottweaks.keybinding.ReachExtensionKey;
 import com.github.aruma256.lottweaks.keybinding.ReplaceBlockKey;
 import com.github.aruma256.lottweaks.keybinding.SmartPickKey;
 import com.github.aruma256.lottweaks.palette.PaletteConfigManager;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -35,12 +34,12 @@ public class LotTweaksClient implements ClientModInitializer, ClientPlayConnecti
 	private static String serverVersion = "0";
 	private static final KeyMapping.Category CATEGORY = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("lottweaks", "keys"));
 	private static final PickHistory PICK_HISTORY = new PickHistory();
-	private static final ReplaceBlockKey REPLACE_BLOCK_KEY = new ReplaceBlockKey(GLFW.GLFW_KEY_G, CATEGORY, PICK_HISTORY);
+	private static final ReplaceBlockKey REPLACE_BLOCK_KEY = new ReplaceBlockKey(InputConstants.KEY_G, CATEGORY, PICK_HISTORY);
 	private static KeyMapping[] keyMappings = {
-			SmartPickKey.create(GLFW.GLFW_KEY_V, CATEGORY, PICK_HISTORY),
-			new PaletteKey(GLFW.GLFW_KEY_R, CATEGORY),
+			SmartPickKey.create(InputConstants.KEY_V, CATEGORY, PICK_HISTORY),
+			new PaletteKey(InputConstants.KEY_R, CATEGORY),
 			REPLACE_BLOCK_KEY,
-			new ReachExtensionKey(GLFW.GLFW_KEY_U, CATEGORY)
+			new ReachExtensionKey(InputConstants.KEY_U, CATEGORY)
 	};
 
 	public LotTweaksClient() {
