@@ -21,7 +21,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.serialization.JsonOps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -30,6 +29,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
@@ -47,11 +47,19 @@ public class ItemGroupsConfigLoader {
      */
     private static RegistryAccess getRegistryAccess() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level != null) {
+        if (mc != null && mc.level != null) {
             return mc.level.registryAccess();
         }
         // Fallback for when not in a world (limited - won't have enchantments etc.)
         return RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+    }
+
+    /**
+     * Components contain typed NBT (e.g. booleans stored as bytes, custom_data);
+     * a JSON intermediate loses those types, so codecs operate on NBT directly.
+     */
+    private static RegistryOps<Tag> createRegistryOps() {
+        return RegistryOps.create(NbtOps.INSTANCE, getRegistryAccess());
     }
     private static final int CURRENT_CONFIG_VERSION = 1;
 
@@ -198,11 +206,7 @@ public class ItemGroupsConfigLoader {
             String componentsStr = itemObj.get("components").getAsString();
             try {
                 CompoundTag nbt = TagParser.parseCompoundFully(componentsStr);
-                // Use client's registry access for data-driven registries (e.g., enchantments)
-                RegistryAccess registryAccess = getRegistryAccess();
-                RegistryOps<com.google.gson.JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
-                com.google.gson.JsonElement json = NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, nbt);
-                DataComponentPatch patch = DataComponentPatch.CODEC.parse(registryOps, json).getOrThrow();
+                DataComponentPatch patch = DataComponentPatch.CODEC.parse(createRegistryOps(), nbt).getOrThrow();
                 itemStack.applyComponents(patch);
             } catch (Exception e) {
                 warnings.add(String.format("Failed to parse components for '%s': %s (%s)",
@@ -274,12 +278,7 @@ public class ItemGroupsConfigLoader {
         if (itemState.hasComponents()) {
             try {
                 DataComponentPatch patch = stack.getComponentsPatch();
-                // Use client's registry access to include data-driven registries (e.g., enchantments)
-                RegistryOps<com.google.gson.JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, getRegistryAccess());
-                com.google.gson.JsonElement encoded = DataComponentPatch.CODEC.encodeStart(registryOps, patch).getOrThrow();
-
-                // Convert JSON to SNBT-like string
-                net.minecraft.nbt.Tag nbt = JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, encoded);
+                Tag nbt = DataComponentPatch.CODEC.encodeStart(createRegistryOps(), patch).getOrThrow();
                 obj.addProperty("components", nbt.toString());
             } catch (Exception e) {
                 LotTweaks.LOGGER.warn("Failed to serialize components for {}", id, e);
